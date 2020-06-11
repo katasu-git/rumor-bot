@@ -5,7 +5,10 @@ function getRumorsFromTweet($twitterURL) {
     $res = getTweet($twitterURL); // ツイートのリンクからツイートを取得
     if ($res['text']) {
         $twitterText = $res['text'];
-        $twitterText = mb_strstr($twitterText, '…', true);
+        if(preg_match('/…/',$twitterText)){
+            //$twitterTextのなかに…が含まれている場合
+            $twitterText = mb_strstr($twitterText, '…', true);
+        }
         require './rumor-background/RestAPI/getSimTweet.php';
         $res = getSimTweet($twitterText);
         if($res) {
