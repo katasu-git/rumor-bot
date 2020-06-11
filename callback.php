@@ -33,12 +33,12 @@ if ($action == 'share-twitter') {
 } else if ($action == 'handle-user-doubt') {
     // 〜って本当？と聞かれた場合
     $messages = getRumorsFromFreeWord($userText);
-} else if($action == 'input.unknown' || $action == 'input.welcome') {
-    // あいさつ，もしくは意図がわからなかった場合
+} else if($action == 'input.welcome') {
+    // あいさつ
     $text = $array['queryResult']['fulfillmentText'];
     $messages = simpleReply([$text]);
-} else if ($action == 'handle-help') {
-    // ヘルプを表示
+} else if ($action == 'input.unknown' || $action == 'handle-help') {
+    // ヘルプを表示，もしくは意図がわからなかった場合
     $messages = simpleReply(['「〇〇の流言を教えて！」や「〇〇って本当？」と話しかけてみてください！']);
 } else if ($action == 'handle-latest-rumor') {
     // 最新の流言を上から5つ取ってくる処理
@@ -46,6 +46,19 @@ if ($action == 'share-twitter') {
 } else if ($action == 'handle-keyword-rumor') {
     // キーワードに関連する流言を取ってくる処理
     $messages = simpleReply(['この機能は作成中です']);
+}
+
+///ログの書き込み部分
+$noMatch = 0;
+if ($action == 'input.unknown') {
+    $noMatch = 1;
+}
+require_once("./rumor-background/RestAPI/writeLog.php");
+foreach($messages as $m) {
+    writeLog($userText, 0, $userId, $noMatch); //ユーザのメッセージ
+    if ($noMatch !== 1) {
+        writeLog($m["text"], 1, $userId, $noMatch); //ボットのメッセージ
+    }
 }
 
 // 返信部分
