@@ -6,7 +6,7 @@ import csv
 
 def getStopWords():
     #http://svn.sourceforge.jp/svnroot/slothlib/CSharp/Version1/SlothLib/NLP/Filter/StopWord/word/Japanese.txt
-    f = open('/home/nishimura/public_html/rumor-background/stopwordJP.txt')
+    f = open('/home/nishimura/public_html/rumor-bot/rumor-background/stopwordJP.txt')
     data = f.read()  # ファイル終端まで全て読んだデータを返す
     f.close()
 
@@ -62,7 +62,7 @@ def getRumorsJson():
 
 def writeTsv(array):
     #####　書き込み ####
-    f = open('/home/nishimura/public_html/rumor-background/rumor-nishimura.txt', 'w')
+    f = open('/home/nishimura/public_html/rumor-bot/rumor-background/rumor-nishimura.txt', 'w')
     writer = csv.writer(f, delimiter='\t')
     writer.writerows(array)
     f.close()

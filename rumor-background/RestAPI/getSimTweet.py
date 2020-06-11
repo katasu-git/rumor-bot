@@ -5,7 +5,7 @@ import json
 
 def getStopWords():
     #http://svn.sourceforge.jp/svnroot/slothlib/CSharp/Version1/SlothLib/NLP/Filter/StopWord/word/Japanese.txt
-    f = open('/home/nishimura/public_html/rumor-background/stopwordJP.txt')
+    f = open('/home/nishimura/public_html/rumor-bot/rumor-background/stopwordJP.txt')
     data = f.read()  # ファイル終端まで全て読んだデータを返す
     f.close()
 
@@ -30,7 +30,7 @@ def returnAnaText(text):
 
 def getRumorsJson():
     #json_open = open('/home/nishimura/public_html/editTsv/rumor_kakimoto.json', 'r')
-    f = open('/home/nishimura/public_html/rumor-background/rumor-nishimura.txt')
+    f = open('/home/nishimura/public_html/rumor-bot/rumor-background/rumor-nishimura.txt')
     #id　訂正数　元の流言テキスト　分かち書きの結果（スラッシュ区切り）
     data1 = f.read()  # ファイル終端まで全て読んだデータを返す
     f.close()

@@ -26,6 +26,14 @@ $json = analyzeText($userText); // インテントの抽出
 $array = json_decode( $json , true );
 $action = $array['queryResult']['action']; // どのアクションを実行するか
 
+//テキストから「デマ」や「本当？」などのワードを取り除く処理
+if($array['queryResult']['parameters']['dema']) {
+    $userText = str_replace($array['queryResult']['parameters']['dema'], '', $userText);
+}
+if($array['queryResult']['parameters']['doubt']) {
+    $userText = str_replace($array['queryResult']['parameters']['doubt'], '', $userText);
+}
+
 $messages = [];
 if ($action == 'share-twitter') {
     // ツイッターリンクが共有された場合
