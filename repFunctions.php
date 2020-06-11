@@ -3,16 +3,12 @@
 function getRumorsFromTweet($twitterURL) {
     require './rumor-background/RestAPI/getTweet.php';
     $res = getTweet($twitterURL); // ツイートのリンクからツイートを取得
-    if ($res['text']) {
-        $twitterText = $res['text'];
-        if(preg_match('/…/',$twitterText)){
-            //$twitterTextのなかに…が含まれている場合
-            $twitterText = mb_strstr($twitterText, '…', true);
-        }
+    if ($res['full_text']) {
+        $twitterText = cleanText($res['full_text']);
         require './rumor-background/RestAPI/getSimTweet.php';
         $res = getSimTweet($twitterText);
         if($res) {
-            $message = '関係ありそうな怪しい情報はこれだよ' . "\n\n";
+            $message = $twitterText . "\n\nに関係ありそうな怪しい情報はこれだよ\n\n";
             foreach ($res as $r) {
                 $message = $message . '・' . $r;
                 if ($r !== end($res)) {
@@ -29,6 +25,16 @@ function getRumorsFromTweet($twitterURL) {
     }
     $messages = simpleReply([$message]);
     return $messages;
+}
+
+function cleanText($text) {
+    // URLを削除
+    if(preg_match_all('(https?://[-_.!~*\'()a-zA-Z0-9;/?:@&=+$,%#]+)', $text, $result) !== false){
+        $text = str_replace($result[0], '', $text);
+    }
+    $text = preg_replace("/( |　)/", "", $text ); #文中に含まれる空白を削除
+    $text = preg_replace('/(?:\n|\r|\r\n)/', '', $text );
+    return $text;
 }
 
 function getRumorsFromFreeWord($userText) {

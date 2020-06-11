@@ -31,6 +31,7 @@ function getTweet($twitterURL) {
 		// パラメータA (オプション)
 		$params_a = array(
 			"id" => $tweetId,
+			"tweet_mode" => "extended" #ここ必要
 	//		"trim_user" => "true",
 	//		"include_my_retweet" => "true",
 	//		"include_entities" => "true",
