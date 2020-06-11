@@ -30,7 +30,7 @@ $messages = [];
 if ($action == 'share-twitter') {
     // ツイッターリンクが共有された場合
     $messages = getRumorsFromTweet($userText);
-} else if ($action == 'handle-user-doubt') {
+} else if ($action == 'handle-user-doubt' || $action == 'handle-keyword-rumor') {
     // 〜って本当？と聞かれた場合
     $messages = getRumorsFromFreeWord($userText);
 } else if($action == 'input.welcome') {
@@ -43,9 +43,9 @@ if ($action == 'share-twitter') {
 } else if ($action == 'handle-latest-rumor') {
     // 最新の流言を上から5つ取ってくる処理
     $messages = getFiveRatestRumor();
-} else if ($action == 'handle-keyword-rumor') {
-    // キーワードに関連する流言を取ってくる処理
-    $messages = simpleReply(['この機能は作成中です']);
+} else {
+    //例外処理
+    $messages = simpleReply(['「〇〇の流言を教えて！」や「〇〇って本当？」と話しかけてみてください！']);
 }
 
 ///ログの書き込み部分
