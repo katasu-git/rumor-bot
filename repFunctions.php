@@ -39,6 +39,7 @@ function cleanText($text) {
 
 function getRumorsFromFreeWord($userText) {
     require './rumor-background/RestAPI/getSimTweet.php';
+    $userText = cleanText($userText);
     $res = getSimTweet($userText);
     $messages = [];
     if($res) {
@@ -62,7 +63,7 @@ function getFiveRatestRumor() {
     $res = getRatestRumor();
     $message = 'こんな怪しい情報が出回っているよ！' . "\n\n";
     foreach($res as $r) {
-        $message = $message . '・' . $r;
+        $message = $message . '・' . $r['contents'];
         if ($r !== end($res)) {
             // 最後
             $message = $message . "\n\n";

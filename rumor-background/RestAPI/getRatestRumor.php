@@ -8,10 +8,29 @@ function getRatestRumor() {
     // $command="python getRatestRumor.py";
     $command="/usr/local/bin/python3 /home/nishimura/public_html/rumor-bot/rumor-background/RestAPI/getRatestRumor.py 2>&1";
     exec($command,$output); //pythonを呼び出して形態素解析
-    #$output = shell_exec("export LANG=ja_JP.UTF-8; python getSimTweet.py $text");
     $json = json_encode($output);
     $array = json_decode($json, true);
-    return $array;
+
+    $result = [];
+    foreach($array as $a){
+        $array = explode(',', $a);
+        $associative['id'] = $array[0];
+        $associative['contents'] = $array[1];
+        $associative['fix'] = $array[2];
+        $associative['wakachi'] = $array[3];
+        array_push($result, trimStr($associative));
+    }
+    return $result;
 
 }
+
+function trimStr($array) {
+    $array = str_replace("[", '', $array);
+    $array = str_replace("]", '', $array);
+    $array = str_replace("'", '', $array);
+    $array = str_replace(" ", '', $array);
+    return $array;
+}
+
+#getRatestRumor() #削除する
 ?>

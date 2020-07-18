@@ -19,6 +19,6 @@ def main():
     rumors = getRumorsJson()
     # id content num wakachi
     for i in range(5):
-        print(rumors[i][1])
+        print(rumors[i])
 
 main()

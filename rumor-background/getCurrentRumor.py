@@ -1,8 +1,10 @@
 # coding: UTF-8
 import sys
 import MeCab
-import urllib2
+#import urllib2 #python2
+import urllib.request, urllib.error #python3
 import csv
+from kutt import kutt #shorURL
 
 def getStopWords():
     #http://svn.sourceforge.jp/svnroot/slothlib/CSharp/Version1/SlothLib/NLP/Filter/StopWord/word/Japanese.txt
@@ -43,12 +45,19 @@ def returnAnaTexts(texts):
 
 def getRumorsJson():
     #json_open = open('/home/nishimura/public_html/editTsv/rumor_kakimoto.json', 'r')
-    f = urllib2.urlopen('http://mednlp.jp/~miyabe/rumorCloud/currentRank.txt')
-    line = f.read().splitlines() # 開いたファイルの中身を表示する
-    f.close()
+    #f = urllib2.urlopen('http://mednlp.jp/~miyabe/rumorCloud/currentRank.txt') #python2
+    #line = f.read().splitlines() # 開いたファイルの中身を表示する
+    #f.close()
+    url = 'http://mednlp.jp/~miyabe/rumorCloud/currentRank.txt'
+    response = urllib.request.urlopen(url)
+    data = response.read()
+    line = data.splitlines() # 開いたファイルの中身を表示する
+    #line = line.decode('utf-8') # なぜかバイト列なので文字列に変換
+    #print(line[4])
 
     rumors = []
     for l in line:
+        l = l.decode('utf-8') # なぜかバイト列なので文字列に変換
         if l.split('	') != ['']: #これがないとゴミが入る
             rumors.append( l.split('	') )
     del rumors[0] #一行目は関係ないので削除 , id，　本体，　訂正数　の順の配列になっている
@@ -60,6 +69,23 @@ def getRumorsJson():
 
     return rumors
 
+def getShortURL(longURL):
+    f = open('/home/nishimura/public_html/rumor-bot/conf/kutt.txt')
+    API = f.read()  # ファイル終端まで全て読んだデータを返す
+    obj = kutt.submit(API, longURL, reuse=True) # reuse, customurl and password are OPTIONAL
+    shortURL = obj['data']['link']
+    return shortURL
+
+def addShortURL(rumors):
+    rumorCloudLink = "http://mednlp.jp/~miyabe/rumorCloud/detail_dema2.cgi" #?m=&r=1&n=540
+    rumorsWithURL = rumors
+    for i in range(len(rumors)):
+        uniqueURL = rumorCloudLink + "?m=&r=" + rumors[i][0] + "&n=" + rumors[i][2]
+        uniqueURL = getShortURL(uniqueURL) #urlを短縮
+        rumorsWithURL[i].append( uniqueURL )
+    print(rumorsWithURL[0])
+
+
 def writeTsv(array):
     #####　書き込み ####
     f = open('/home/nishimura/public_html/rumor-bot/rumor-background/rumor-nishimura.txt', 'w')
@@ -67,13 +93,15 @@ def writeTsv(array):
     writer.writerows(array)
     f.close()
 
-    print "書き込み完了！"
+    print("書き込み完了！")
     ##################
+
 
 def main():
     rumors = getRumorsJson()
     anaRumors = returnAnaTexts(rumors) #currentRankに形態素解析の結果を加える
-    
+    addShortURL(anaRumors)
+
     #####　棄却流言を削除　#########
     anaRumorsFixed = []
     for i in range(len(anaRumors)):

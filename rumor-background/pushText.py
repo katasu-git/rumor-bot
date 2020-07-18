@@ -14,5 +14,5 @@ line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
 
 user_id = "Uf811de50a7725a63c181cf7fc8977ae7"
 
-messages = TextSendMessage(text="こんにちは！")
+messages = TextSendMessage(text="http://web.wakayama-u.ac.jp/~yoshino/lab/")
 line_bot_api.push_message(user_id, messages=messages)
