@@ -63,7 +63,8 @@ function getFiveRatestRumor() {
     $res = getRatestRumor();
     $message = 'こんな怪しい情報が出回っているよ！' . "\n\n";
     foreach($res as $r) {
-        $message = $message . '・' . $r['contents'];
+        $message = $message . '・' . $r['contents'] . "\n" . $r['url'];
+
         if ($r !== end($res)) {
             // 最後
             $message = $message . "\n\n";

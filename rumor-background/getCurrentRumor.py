@@ -44,10 +44,12 @@ def returnAnaTexts(texts):
     return anaTexts
 
 def getRumorsJson():
-    #json_open = open('/home/nishimura/public_html/editTsv/rumor_kakimoto.json', 'r')
-    #f = urllib2.urlopen('http://mednlp.jp/~miyabe/rumorCloud/currentRank.txt') #python2
-    #line = f.read().splitlines() # 開いたファイルの中身を表示する
-    #f.close()
+    """
+    # python2系の処理 urllib2はpython3にはないらしい
+    f = urllib2.urlopen('http://mednlp.jp/~miyabe/rumorCloud/currentRank.txt') #python2
+    line = f.read().splitlines() # 開いたファイルの中身を表示する
+    f.close()
+    """
     url = 'http://mednlp.jp/~miyabe/rumorCloud/currentRank.txt'
     response = urllib.request.urlopen(url)
     data = response.read()
@@ -84,7 +86,6 @@ def addShortURL(rumors):
         uniqueURL = getShortURL(uniqueURL) #urlを短縮
         rumorsWithURL[i].append( uniqueURL )
     print(rumorsWithURL[0])
-
 
 def writeTsv(array):
     #####　書き込み ####

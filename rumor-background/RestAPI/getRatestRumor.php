@@ -18,6 +18,7 @@ function getRatestRumor() {
         $associative['contents'] = $array[1];
         $associative['fix'] = $array[2];
         $associative['wakachi'] = $array[3];
+        $associative['url'] = $array[4];
         array_push($result, trimStr($associative));
     }
     return $result;
