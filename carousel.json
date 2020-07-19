@@ -1,6 +1,6 @@
 {
   "type": "template",
-  "altText": "this is a carousel template",
+  "altText": "流言情報",
   "template": {
     "type": "carousel",
     "actions": [],

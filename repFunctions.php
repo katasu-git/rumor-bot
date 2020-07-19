@@ -8,23 +8,40 @@ function getRumorsFromTweet($twitterURL) {
         require './rumor-background/RestAPI/getSimTweet.php';
         $res = getSimTweet($twitterText);
         if($res) {
-            $message = $twitterText . "\n\nに関係ありそうな怪しい情報はこれだよ\n\n";
-            foreach ($res as $r) {
-                $message = $message . '・' . $r;
-                if ($r !== end($res)) {
-                    // 最後
-                    $message = $message . "\n\n";
-                }
-            }
+            $twitterText = cutTweet($twitterText);
+            $firstCardTexts = [
+                "title"=> "ツイートに関係しそうなデマ→",
+                "text"=> $twitterText,
+                "actions"=> [
+                  [
+                    "type"=> "uri",
+                    "label"=> "もとのツイートを見る",
+                    "uri"=> $twitterURL
+                  ]
+                ]
+            ];
+            $messages = cardReply($res, $firstCardTexts);
         } else {
             $message = '関連する流言はありませんでした';
+            $messages = simpleReply([$message]);
         }
     } else {
         // 配列がからの場合
         $message = 'ツイートが取得できませんでした';
+        $messages = simpleReply([$message]);
     }
-    $messages = simpleReply([$message]);
     return $messages;
+}
+
+function cutTweet($text) {
+    //文字数の上限
+    $limit = 45;
+    if(mb_strlen($text) > $limit) { 
+        $cutText = mb_substr($text,0,$limit, "UTF-8");
+        return $cutText . "...";
+    } else {
+        return $text;
+    }
 }
 
 function cleanText($text) {
@@ -61,20 +78,18 @@ function getRumorsFromFreeWord($userText) {
 function getFiveRatestRumor() {
     require './rumor-background/RestAPI/getRatestRumor.php';
     $res = getRatestRumor();
-    /*
-    $message = 'こんな怪しい情報が出回っているよ！' . "\n\n";
-    foreach($res as $r) {
-        $message = $message . '・' . $r['contents'] . "\n" . $r['url'];
-
-        if ($r !== end($res)) {
-            // 最後
-            $message = $message . "\n\n";
-        }
-    }
-    $messages = simpleReply([$message]);
-    return $messages;
-    */
-    return cardReply($res);
+    $firstCardTexts = [
+        "title"=> "最新の流言→",
+        "text"=> "こんな怪しい情報があるよ！注意してね！",
+        "actions"=> [
+          [
+            "type"=> "uri",
+            "label"=> "ランキングを見る",
+            "uri"=> "http://mednlp.jp/~miyabe/rumorCloud/rumorlist.cgi"
+          ]
+        ]
+    ];
+    return cardReply($res, $firstCardTexts);
 }
 
 function simpleReply($texts) {
@@ -92,12 +107,14 @@ function simpleReply($texts) {
     return $messages;
 }
 
-function cardReply($rumors) {
+function cardReply($rumors, $firstCardTexts) {
     $cardMessages = [];
     $file = "./carousel.json";
     $json = file_get_contents($file);
     $array = json_decode($json, true);
-
+    array_push(
+        $array["template"]["columns"], $firstCardTexts
+    );
     for($i=0; $i<count($rumors); $i++) {
         array_push(
             $array["template"]["columns"],

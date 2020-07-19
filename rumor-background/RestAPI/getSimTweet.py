@@ -82,7 +82,7 @@ def main():
 
     if hitList:
         for h in hitList:
-            print(rumors[h[1]][1])
+            print(rumors[h[1]])
 
     """
     if not hitList:
