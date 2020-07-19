@@ -1,8 +1,7 @@
 <?php
-require_once './rumor-background/RestAPI/getSimTweet.php';
-require_once './rumor-background/RestAPI/getTweet.php';
-
 function getRumorsFromTweet($twitterURL) {
+    require_once './rumor-background/RestAPI/getSimTweet.php';
+    require_once './rumor-background/RestAPI/getTweet.php';
     $res = getTweet($twitterURL); // ツイートのリンクからツイートを取得
     
     if (!$res['full_text']) {
@@ -18,14 +17,14 @@ function getRumorsFromTweet($twitterURL) {
         return $messages;
     }
 
-    $twitterText = cutTweet($twitterText);
+    $twitterText = cutText($twitterText);
     $firstCardTexts = [
         "title"=> "ツイートに関係しそうなデマ→",
         "text"=> $twitterText,
         "actions"=> [
             [
             "type"=> "uri",
-            "label"=> "もとのツイートを開く",
+            "label"=> "もとのツイートを見る",
             "uri"=> $twitterURL
             ]
         ]
@@ -34,7 +33,42 @@ function getRumorsFromTweet($twitterURL) {
     return $messages;
 }
 
-function cutTweet($text) {
+function getRumorsFromFreeWord($userText) {
+    require_once './rumor-background/RestAPI/getSimTweet.php';
+    $userText = cleanText($userText);
+    $res = getSimTweet($userText);
+    $firstCardTexts = [
+        "title"=> "関係ありそうなデマ→",
+        "text"=> $userText,
+        "actions"=> [
+          [
+            "type"=> "uri",
+            "label"=> "ランキングを見る",
+            "uri"=> "http://mednlp.jp/~miyabe/rumorCloud/rumorlist.cgi"
+          ]
+        ]
+    ];
+    return cardReply($res, $firstCardTexts);
+}
+
+function getFiveRatestRumor() {
+    require_once './rumor-background/RestAPI/getRatestRumor.php';
+    $res = getRatestRumor();
+    $firstCardTexts = [
+        "title"=> "最新の流言→",
+        "text"=> "こんな怪しい情報があるよ！注意してね！",
+        "actions"=> [
+          [
+            "type"=> "uri",
+            "label"=> "ランキングを見る",
+            "uri"=> "http://mednlp.jp/~miyabe/rumorCloud/rumorlist.cgi"
+          ]
+        ]
+    ];
+    return cardReply($res, $firstCardTexts);
+}
+
+function cutText($text) {
     //文字数の上限
     $limit = 45;
     if(mb_strlen($text) > $limit) { 
@@ -53,41 +87,6 @@ function cleanText($text) {
     $text = preg_replace("/( |　)/", "", $text ); #文中に含まれる空白を削除
     $text = preg_replace('/(?:\n|\r|\r\n)/', '', $text );
     return $text;
-}
-
-function getRumorsFromFreeWord($userText) {
-    require './rumor-background/RestAPI/getSimTweet.php';
-    $userText = cleanText($userText);
-    $res = getSimTweet($userText);
-    $firstCardTexts = [
-        "title"=> "関係ありそうなデマ→",
-        "text"=> $userText,
-        "actions"=> [
-          [
-            "type"=> "uri",
-            "label"=> "ランキングを見る",
-            "uri"=> "http://mednlp.jp/~miyabe/rumorCloud/rumorlist.cgi"
-          ]
-        ]
-    ];
-    return cardReply($res, $firstCardTexts);
-}
-
-function getFiveRatestRumor() {
-    require './rumor-background/RestAPI/getRatestRumor.php';
-    $res = getRatestRumor();
-    $firstCardTexts = [
-        "title"=> "最新の流言→",
-        "text"=> "こんな怪しい情報があるよ！注意してね！",
-        "actions"=> [
-          [
-            "type"=> "uri",
-            "label"=> "ランキングを見る",
-            "uri"=> "http://mednlp.jp/~miyabe/rumorCloud/rumorlist.cgi"
-          ]
-        ]
-    ];
-    return cardReply($res, $firstCardTexts);
 }
 
 function simpleReply($texts) {
@@ -117,8 +116,8 @@ function cardReply($rumors, $firstCardTexts) {
         array_push(
             $array["template"]["columns"],
             [
-                "title"=> $rumors[$i]['fix'] . "人 が疑っています",
-                "text"=> $rumors[$i]['contents'],
+                "title"=> $rumors[$i]['fix'] . "人 が疑ってます",
+                "text"=> cutText($rumors[$i]['contents']),
                 "actions"=> [
                   [
                     "type"=> "uri",
