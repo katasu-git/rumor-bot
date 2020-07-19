@@ -1,35 +1,36 @@
 <?php
+require_once './rumor-background/RestAPI/getSimTweet.php';
+require_once './rumor-background/RestAPI/getTweet.php';
 
 function getRumorsFromTweet($twitterURL) {
-    require './rumor-background/RestAPI/getTweet.php';
     $res = getTweet($twitterURL); // ツイートのリンクからツイートを取得
-    if ($res['full_text']) {
-        $twitterText = cleanText($res['full_text']);
-        require './rumor-background/RestAPI/getSimTweet.php';
-        $res = getSimTweet($twitterText);
-        if($res) {
-            $twitterText = cutTweet($twitterText);
-            $firstCardTexts = [
-                "title"=> "ツイートに関係しそうなデマ→",
-                "text"=> $twitterText,
-                "actions"=> [
-                  [
-                    "type"=> "uri",
-                    "label"=> "もとのツイートを見る",
-                    "uri"=> $twitterURL
-                  ]
-                ]
-            ];
-            $messages = cardReply($res, $firstCardTexts);
-        } else {
-            $message = '関連する流言はありませんでした';
-            $messages = simpleReply([$message]);
-        }
-    } else {
-        // 配列がからの場合
-        $message = 'ツイートが取得できませんでした';
-        $messages = simpleReply([$message]);
+    
+    if (!$res['full_text']) {
+        $messages = simpleReply(['ツイートが取得できませんでした']);
+        return $messages;
     }
+
+    $twitterText = cleanText($res['full_text']);
+    $res = getSimTweet($twitterText);
+
+    if(!$res) {
+        $messages = simpleReply(['関連する流言はありませんでした']);
+        return $messages;
+    }
+
+    $twitterText = cutTweet($twitterText);
+    $firstCardTexts = [
+        "title"=> "ツイートに関係しそうなデマ→",
+        "text"=> $twitterText,
+        "actions"=> [
+            [
+            "type"=> "uri",
+            "label"=> "もとのツイートを開く",
+            "uri"=> $twitterURL
+            ]
+        ]
+    ];
+    $messages = cardReply($res, $firstCardTexts);
     return $messages;
 }
 
@@ -58,21 +59,18 @@ function getRumorsFromFreeWord($userText) {
     require './rumor-background/RestAPI/getSimTweet.php';
     $userText = cleanText($userText);
     $res = getSimTweet($userText);
-    $messages = [];
-    if($res) {
-        $message = '関係ありそうな怪しい情報はこれだよ' . "\n\n";
-        foreach ($res as $r) {
-            $message = $message . '・' . $r;
-            if ($r !== end($res)) {
-                // 最後
-                $message = $message . "\n\n";
-            }
-        }
-    } else {
-        $message = '関連する流言はありませんでした';
-    }
-    $messages = simpleReply([$message]);
-    return $messages;
+    $firstCardTexts = [
+        "title"=> "関係ありそうなデマ→",
+        "text"=> $userText,
+        "actions"=> [
+          [
+            "type"=> "uri",
+            "label"=> "ランキングを見る",
+            "uri"=> "http://mednlp.jp/~miyabe/rumorCloud/rumorlist.cgi"
+          ]
+        ]
+    ];
+    return cardReply($res, $firstCardTexts);
 }
 
 function getFiveRatestRumor() {
@@ -119,7 +117,7 @@ function cardReply($rumors, $firstCardTexts) {
         array_push(
             $array["template"]["columns"],
             [
-                "title"=> $rumors[$i]['fix'] . "人 が疑ってます",
+                "title"=> $rumors[$i]['fix'] . "人 が疑っています",
                 "text"=> $rumors[$i]['contents'],
                 "actions"=> [
                   [
