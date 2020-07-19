@@ -61,6 +61,7 @@ function getRumorsFromFreeWord($userText) {
 function getFiveRatestRumor() {
     require './rumor-background/RestAPI/getRatestRumor.php';
     $res = getRatestRumor();
+    /*
     $message = 'こんな怪しい情報が出回っているよ！' . "\n\n";
     foreach($res as $r) {
         $message = $message . '・' . $r['contents'] . "\n" . $r['url'];
@@ -72,9 +73,12 @@ function getFiveRatestRumor() {
     }
     $messages = simpleReply([$message]);
     return $messages;
+    */
+    return cardReply($res);
 }
 
 function simpleReply($texts) {
+    // メッセージオブジェクトの作成 http://urx.blue/vFSo
     $messages = [];
     foreach($texts as $t) {
         array_push(
@@ -86,4 +90,32 @@ function simpleReply($texts) {
         );
     }
     return $messages;
+}
+
+function cardReply($rumors) {
+    $cardMessages = [];
+    $file = "./carousel.json";
+    $json = file_get_contents($file);
+    $array = json_decode($json, true);
+
+    for($i=0; $i<count($rumors); $i++) {
+        array_push(
+            $array["template"]["columns"],
+            [
+                "title"=> $rumors[$i]['fix'] . "人 が疑ってます",
+                "text"=> $rumors[$i]['contents'],
+                "actions"=> [
+                  [
+                    "type"=> "uri",
+                    "label"=> "もっと詳しく！",
+                    "uri"=> $rumors[$i]['url']
+                  ]
+                ]
+            ]
+        );
+    }
+    array_push(
+        $cardMessages, $array
+    );
+    return $cardMessages;
 }

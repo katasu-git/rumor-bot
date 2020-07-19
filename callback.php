@@ -63,10 +63,12 @@ if ($action == 'input.unknown') {
     $noMatch = 1;
 }
 require_once("./rumor-background/RestAPI/writeLog.php");
-foreach($messages as $m) {
-    writeLog($userText, 0, $userId, $noMatch); //ユーザのメッセージ
-    if ($noMatch !== 1) {
-        writeLog($m["text"], 1, $userId, $noMatch); //ボットのメッセージ
+if($messages[0]['type'] == 'text') {
+    foreach($messages as $m) {
+        writeLog($userText, 0, $userId, $noMatch); //ユーザのメッセージ
+        if ($noMatch !== 1) {
+            writeLog($m["text"], 1, $userId, $noMatch); //ボットのメッセージ
+        }
     }
 }
 
