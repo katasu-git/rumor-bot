@@ -18,8 +18,9 @@ function getRumorsFromTweet($twitterURL) {
     }
 
     $twitterText = cutText($twitterText);
+    #$emoji = json_encode('"0x100078"');
     $firstCardTexts = [
-        "title"=> "ツイートに関係しそうなデマ→",
+        "title"=> "関係ありそうなデマ ▶ ▶ ▶",
         "text"=> $twitterText,
         "actions"=> [
             [
@@ -38,7 +39,7 @@ function getRumorsFromFreeWord($userText) {
     $userText = cleanText($userText);
     $res = getSimTweet($userText);
     $firstCardTexts = [
-        "title"=> "関係ありそうなデマ→",
+        "title"=> "関係ありそうなデマ ▶ ▶ ▶",
         "text"=> $userText,
         "actions"=> [
           [
@@ -55,7 +56,7 @@ function getFiveRatestRumor() {
     require_once './rumor-background/RestAPI/getRatestRumor.php';
     $res = getRatestRumor();
     $firstCardTexts = [
-        "title"=> "最新の流言→",
+        "title"=> "最新の流言 ▶ ▶ ▶",
         "text"=> "こんな怪しい情報があるよ！注意してね！",
         "actions"=> [
           [

@@ -14,7 +14,10 @@ f.close()
 
 line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
 
-user_id = "Uf811de50a7725a63c181cf7fc8977ae7"
+#user_id = "Uf811de50a7725a63c181cf7fc8977ae7"
 
 messages = TextSendMessage(text="http://web.wakayama-u.ac.jp/~yoshino/lab/")
-line_bot_api.push_message(user_id, messages=messages)
+#line_bot_api.push_message(user_id, messages=messages) #id指定して個人に送信するパターン
+#line_bot_api.multicast(['to1', 'to2'], TextSendMessage(text='Hello World!')) #複数ユーザに送信するには配列でidを渡す
+line_bot_api.broadcast(TextSendMessage(text='ブロードキャスとのテストです．http://web.wakayama-u.ac.jp/~yoshino/lab/')) #登録者全員に送信
+print("送信完了！")

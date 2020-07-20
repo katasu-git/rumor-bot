@@ -83,7 +83,7 @@ def addShortURL(rumors):
     rumorsWithURL = rumors
     for i in range(len(rumors)):
         uniqueURL = rumorCloudLink + "?m=&r=" + rumors[i][0] + "&n=" + rumors[i][2]
-        uniqueURL = getShortURL(uniqueURL) #urlを短縮
+        #uniqueURL = getShortURL(uniqueURL) #urlを短縮
         rumorsWithURL[i].append( uniqueURL )
     print(rumorsWithURL[0])
 
