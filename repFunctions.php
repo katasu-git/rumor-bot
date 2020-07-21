@@ -1,36 +1,34 @@
 <?php
+require_once './rumor-background/RestAPI/writeLog.php';
+# writeLog($userText, 0, $userId, $noMatch); //ユーザのメッセージ
+# テキストの内容，ボット=>1，ユーザID，インテント失敗=>1
+
 function getRumorsFromTweet($twitterURL) {
     require_once './rumor-background/RestAPI/getSimTweet.php';
     require_once './rumor-background/RestAPI/getTweet.php';
     $res = getTweet($twitterURL); // ツイートのリンクからツイートを取得
+    global $userId;
     
     if (!$res['full_text']) {
         $messages = simpleReply(['ツイートが取得できませんでした']);
+        writeLog($twitterURL, 0, $userId, 0); // ユーザのメッセージ
+        writeLog('ツイートが取得できませんでした', 1, $userId, 0); //ボットのメッセージ
         return $messages;
     }
 
     $twitterText = cleanText($res['full_text']);
     $res = getSimTweet($twitterText);
+    writeLog($twitterURL . "\n" . $twitterText, 0, $userId, 0); // ユーザのメッセージ
 
     if(!$res) {
-        $messages = simpleReply(['関連する流言はありませんでした']);
+        $messages = simpleReply(["関連する流言はありませんでした"]);
+        writeLog('関連する流言はありませんでした', 1, $userId, 0); //ボットのメッセージ
         return $messages;
     }
 
-    $twitterText = cutText($twitterText);
-    #$emoji = json_encode('"0x100078"');
-    $firstCardTexts = [
-        "title"=> "関係ありそうなデマ ▶ ▶ ▶",
-        "text"=> $twitterText,
-        "actions"=> [
-            [
-            "type"=> "uri",
-            "label"=> "もとのツイートを見る",
-            "uri"=> $twitterURL
-            ]
-        ]
-    ];
-    $messages = cardReply($res, $firstCardTexts);
+    writeRumorsLog($res); //ボットのメッセージ
+
+    $messages = cardReply($res);
     return $messages;
 }
 
@@ -44,17 +42,6 @@ function getRumorsFromFreeWord($userText) {
 function getFiveRatestRumor() {
     require_once './rumor-background/RestAPI/getRatestRumor.php';
     $res = getRatestRumor();
-    $firstCardTexts = [
-        "title"=> "最新の流言 ▶ ▶ ▶",
-        "text"=> "こんな怪しい情報があるよ！注意してね！",
-        "actions"=> [
-          [
-            "type"=> "uri",
-            "label"=> "ランキングを見る",
-            "uri"=> "http://mednlp.jp/~miyabe/rumorCloud/rumorlist.cgi"
-          ]
-        ]
-    ];
     return cardReply($res);
 }
 
@@ -126,4 +113,14 @@ function cardReply($rumors) {
         ]
     );
     return $cardMessages;
+}
+
+function writeRumorsLog($rumors) {
+    global $userId;
+    $rumorsForLog = "";
+
+    foreach($rumors as $r) {
+        $rumorsForLog = $rumorsForLog . $r['contents'] . "\n";
+    }
+    writeLog($rumorsForLog, 1, $userId, 0); //ボットのメッセージ
 }

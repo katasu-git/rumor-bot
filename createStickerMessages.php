@@ -9,10 +9,10 @@ function createStickerMessages() {
     } else {
         $stickerId = "521141" . (string)mt_rand(11, 49);
     }
-    $messages = [[
+    $messages = [
         "type"=> "sticker",
         "packageId"=> $packageId,
         "stickerId"=> $stickerId
-    ]];
+    ];
     return $messages;
 }

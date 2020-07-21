@@ -20,10 +20,10 @@ $replyToken = $jsonObj->{"events"}[0]->{"replyToken"};
 
 if($type != "text"){
     #テキスト以外のときは適当なスタンプでごまかす
-    //if($type == "sticker") {
-        $messages = createStickerMessages();
-        backMessageToUser($replyToken, $messages);
-    //}
+    $messages = [];
+    array_push($messages, createStickerMessages());
+    backMessageToUser($replyToken, $messages);
+    writeLog("user has sended $type", 0, $userId, 0); //ユーザのメッセージ
     exit;
 }
 
@@ -51,28 +51,16 @@ if ($action == 'share-twitter') {
     $messages = getRumorsFromFreeWord($userText);
 } else if($action == 'input.welcome') {
     // あいさつ
+    $messages = [];
     $text = $array['queryResult']['fulfillmentText'];
-    //$messages = simpleReply([$text]);
-    $messages = [
+    array_push($messages, createStickerMessages());
+    array_push($messages,
         [
-            "type"=> "sticker",
-            "packageId"=> "1",
-            "stickerId"=> "1"
-        ],
-        [
-            "type"=> "text",
-            "text"=>"hello"
-        ],
-        [
-            "type"=> "text",
-            "text"=>"hello2"
-        ],
-        [
-            "type"=> "sticker",
-            "packageId"=> "1",
-            "stickerId"=> "2"
+            "type"=>"text",
+            "text"=>$text
         ]
-    ];
+    );
+    #$messages = simpleReply([$text]);
 } else if ($action == 'input.unknown' || $action == 'handle-help') {
     // ヘルプを表示，もしくは意図がわからなかった場合
     $messages = simpleReply(['「〇〇の流言を教えて！」や「〇〇って本当？」と話しかけてみてください！']);
@@ -84,12 +72,13 @@ if ($action == 'share-twitter') {
     $messages = simpleReply(['「〇〇の流言を教えて！」や「〇〇って本当？」と話しかけてみてください！']);
 }
 
+/*
 ///ログの書き込み部分
 $noMatch = 0;
 if ($action == 'input.unknown') {
     $noMatch = 1;
 }
-require_once("./rumor-background/RestAPI/writeLog.php");
+
 if($messages[0]['type'] == 'text') {
     foreach($messages as $m) {
         writeLog($userText, 0, $userId, $noMatch); //ユーザのメッセージ
@@ -98,6 +87,7 @@ if($messages[0]['type'] == 'text') {
         }
     }
 }
+*/
 
 backMessageToUser($replyToken, $messages);
 

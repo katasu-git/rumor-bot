@@ -61,7 +61,7 @@ function analyzeText($speachText) {
         $queryResult = $response->getQueryResult();
         // レスポンス結果を取得
         $responseJsonString = $response->serializeToJsonString();
-        echo $responseJsonString;
+        #echo $responseJsonString;
         return $responseJsonString;
     } catch(Exception $e) {
         echo "エラー";
