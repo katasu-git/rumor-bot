@@ -4,6 +4,8 @@ require './dialogFlow.php';
 require './repFunctions.php';
 require_once './backMessageToUser.php';
 require_once './createStickerMessages.php';
+require_once './rumor-background/RestAPI/writeLog.php';
+
 ini_set('display_errors', "On"); //エラー表示
 
 //ユーザーからのメッセージ取得
@@ -60,16 +62,26 @@ if ($action == 'share-twitter') {
             "text"=>$text
         ]
     );
-    #$messages = simpleReply([$text]);
+    writeLog($userText, 0, $userId, 0); // ユーザのメッセージ
+    writeLog($text, 1, $userId, 0); //ボットのメッセージ
+
 } else if ($action == 'input.unknown' || $action == 'handle-help') {
     // ヘルプを表示，もしくは意図がわからなかった場合
-    $messages = simpleReply(['「〇〇の流言を教えて！」や「〇〇って本当？」と話しかけてみてください！']);
+    $text = '「〇〇の流言を教えて！」や「〇〇って本当？」と話しかけてみてください！';
+    $messages = simpleReply([$text]);
+    writeLog($userText, 0, $userId, 0); // ユーザのメッセージ
+    writeLog($text, 1, $userId, 0); //ボットのメッセージ
+
 } else if ($action == 'handle-latest-rumor') {
     // 最新の流言を上から5つ取ってくる処理
     $messages = getFiveRatestRumor();
+
 } else {
     //例外処理
-    $messages = simpleReply(['「〇〇の流言を教えて！」や「〇〇って本当？」と話しかけてみてください！']);
+    $text = '「〇〇の流言を教えて！」や「〇〇って本当？」と話しかけてみてください！';
+    $messages = simpleReply([$text]);
+    writeLog($userText, 0, $userId, 0); // ユーザのメッセージ
+    writeLog("例外処理発生", 1, $userId, 0); //ボットのメッセージ
 }
 
 /*
