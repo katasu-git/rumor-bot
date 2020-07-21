@@ -38,18 +38,7 @@ function getRumorsFromFreeWord($userText) {
     require_once './rumor-background/RestAPI/getSimTweet.php';
     $userText = cleanText($userText);
     $res = getSimTweet($userText);
-    $firstCardTexts = [
-        "title"=> "関係ありそうなデマ ▶ ▶ ▶",
-        "text"=> $userText,
-        "actions"=> [
-          [
-            "type"=> "uri",
-            "label"=> "ランキングを見る",
-            "uri"=> "http://mednlp.jp/~miyabe/rumorCloud/rumorlist.cgi"
-          ]
-        ]
-    ];
-    return cardReply($res, $firstCardTexts);
+    return cardReply($res);
 }
 
 function getFiveRatestRumor() {
@@ -66,7 +55,7 @@ function getFiveRatestRumor() {
           ]
         ]
     ];
-    return cardReply($res, $firstCardTexts);
+    return cardReply($res);
 }
 
 function cutText($text) {
@@ -105,14 +94,11 @@ function simpleReply($texts) {
     return $messages;
 }
 
-function cardReply($rumors, $firstCardTexts) {
+function cardReply($rumors) {
     $cardMessages = [];
     $file = "./carousel.json";
     $json = file_get_contents($file);
     $array = json_decode($json, true);
-    array_push(
-        $array["template"]["columns"], $firstCardTexts
-    );
     for($i=0; $i<count($rumors); $i++) {
         array_push(
             $array["template"]["columns"],
@@ -131,6 +117,13 @@ function cardReply($rumors, $firstCardTexts) {
     }
     array_push(
         $cardMessages, $array
+    );
+    array_push(
+        $cardMessages, 
+        [
+            "type"=>"text",
+            "text"=>count($rumors) . "件の怪しい情報見つかったよ！\n" . "もっと詳しく！を押すと、訂正情報が見られるよ。"
+        ]
     );
     return $cardMessages;
 }
