@@ -11,9 +11,11 @@ function getRumorsFromTweet($twitterURL) {
     global $userId;
     
     if (!$res['full_text']) {
-        $messages = simpleReply(['ツイートが取得できませんでした']);
+        $emoji = json_decode('"\uDBC0\uDC7C"');
+        $text = "ツイートが見つからなかったよ$emoji";
+        $messages = simpleReply([$text]);
         writeLog($twitterURL, 0, $userId, 0); // ユーザのメッセージ
-        writeLog('ツイートが取得できませんでした', 1, $userId, 0); //ボットのメッセージ
+        writeLog($text, 1, $userId, 0); //ボットのメッセージ
         return $messages;
     }
 
@@ -22,8 +24,10 @@ function getRumorsFromTweet($twitterURL) {
     writeLog($twitterURL . "\n" . $twitterText, 0, $userId, 0); // ユーザのメッセージ
 
     if(!$res) {
-        $messages = simpleReply(["関連する流言はありませんでした"]);
-        writeLog('関連する流言はありませんでした', 1, $userId, 0); //ボットのメッセージ
+        $emoji = json_decode('"\uDBC0\uDC29"');
+        $text = "関係しそうなデマは見つからなかったよ$emoji 他に気になる情報はないかな？";
+        $messages = simpleReply([$text]);
+        writeLog($text, 1, $userId, 0); //ボットのメッセージ
         return $messages;
     }
 

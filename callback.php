@@ -67,8 +67,29 @@ if ($action == 'share-twitter') {
 
 } else if ($action == 'input.unknown' || $action == 'handle-help') {
     // ヘルプを表示，もしくは意図がわからなかった場合
-    $text = '「〇〇の流言を教えて！」や「〇〇って本当？」と話しかけてみてください！';
-    $messages = simpleReply([$text]);
+    $text = "使い方はわかったかな？気になることがあったら、「〇〇ってホント？」って話しかけてみてね！";
+    //$messages = simpleReply([$text]);
+    $messages = [
+        [
+            "type"=> "image",
+            "originalContentUrl"=> "https://www2.yoslab.net/~nishimura//rumor-bot/images/howtouse1.png",
+            "previewImageUrl"=> "https://www2.yoslab.net/~nishimura//rumor-bot/images/howtouse1.png"
+        ],
+        [
+            "type"=> "image",
+            "originalContentUrl"=> "https://www2.yoslab.net/~nishimura//rumor-bot/images/howtouse2.png",
+            "previewImageUrl"=> "https://www2.yoslab.net/~nishimura//rumor-bot/images/howtouse2.png"
+        ],
+        [
+            "type"=> "image",
+            "originalContentUrl"=> "https://www2.yoslab.net/~nishimura//rumor-bot/images/howtouse3.png",
+            "previewImageUrl"=> "https://www2.yoslab.net/~nishimura//rumor-bot/images/howtouse3.png"
+        ],
+        [
+            "type"=> "text",
+            "text"=> $text
+        ]
+    ];
     writeLog($userText, 0, $userId, 0); // ユーザのメッセージ
     writeLog($text, 1, $userId, 0); //ボットのメッセージ
 
@@ -83,23 +104,6 @@ if ($action == 'share-twitter') {
     writeLog($userText, 0, $userId, 0); // ユーザのメッセージ
     writeLog("例外処理発生", 1, $userId, 0); //ボットのメッセージ
 }
-
-/*
-///ログの書き込み部分
-$noMatch = 0;
-if ($action == 'input.unknown') {
-    $noMatch = 1;
-}
-
-if($messages[0]['type'] == 'text') {
-    foreach($messages as $m) {
-        writeLog($userText, 0, $userId, $noMatch); //ユーザのメッセージ
-        if ($noMatch !== 1) {
-            writeLog($m["text"], 1, $userId, $noMatch); //ボットのメッセージ
-        }
-    }
-}
-*/
 
 backMessageToUser($replyToken, $messages);
 
