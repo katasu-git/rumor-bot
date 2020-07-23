@@ -38,7 +38,7 @@ function getRumorsFromTweet($twitterURL) {
         $messages, 
         [
             "type"=>"text",
-            "text"=>count($res) . "件の怪しい情報見つかったよ！"
+            "text"=>count($res) . "件の怪しい情報が見つかったよ！"
         ]
     );
     return $messages;
@@ -57,7 +57,7 @@ function getRumorsFromFreeWord($userText) {
         $messages, 
         [
             "type"=>"text",
-            "text"=>count($res) . "件の怪しい情報見つかったよ！"
+            "text"=>count($res) . "件の怪しい情報が見つかったよ！"
         ]
     );
     return $messages;

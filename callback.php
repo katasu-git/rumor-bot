@@ -96,6 +96,12 @@ if ($action == 'share-twitter') {
 } else if ($action == 'handle-latest-rumor') {
     // 最新の流言を上から5つ取ってくる処理
     $messages = getFiveRatestRumor($userText);
+    array_push($messages,
+        [
+            "type"=>"text",
+            "text"=>"最新の流言を5つお伝えするよ"
+        ]
+    );
 
 } else {
     //例外処理
