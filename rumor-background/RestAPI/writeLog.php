@@ -1,6 +1,6 @@
 <?php
 ini_set('display_errors',1);
-require_once("connect_mysql.php");
+require_once dirname(__FILE__) . "/connect_mysql.php";
 
 function writeLog($lineMessage, $isBot, $userId, $noMatch) {
     
