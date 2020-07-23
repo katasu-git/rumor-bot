@@ -1,9 +1,9 @@
 <?php
 require 'vendor/autoload.php';
-require './dialogFlow.php';
+require_once dirname(__FILE__) .'/functions/dialogFlow.php';
 require './repFunctions.php';
-require_once './backMessageToUser.php';
-require_once './createStickerMessages.php';
+require_once './functions/backMessageToUser.php';
+require_once './functions/createStickerMessages.php';
 require_once './rumor-background/RestAPI/writeLog.php';
 
 ini_set('display_errors', "On"); //エラー表示

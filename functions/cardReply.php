@@ -2,7 +2,7 @@
 
 function cardReply($rumors) {
     $cardMessages = [];
-    $file = "./carousel.json";
+    $file = dirname(__FILE__) . "/carousel.json";
     $json = file_get_contents($file);
     $array = json_decode($json, true);
     for($i=0; $i<count($rumors); $i++) {

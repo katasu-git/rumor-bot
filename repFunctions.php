@@ -1,6 +1,6 @@
 <?php
 require_once './rumor-background/RestAPI/writeLog.php';
-require_once './cardReply.php';
+require_once dirname(__FILE__) . '/functions/cardReply.php';
 # writeLog($userText, 0, $userId, $noMatch); //ユーザのメッセージ
 # テキストの内容，ボット=>1，ユーザID，インテント失敗=>1
 
