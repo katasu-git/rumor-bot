@@ -1,12 +1,12 @@
 <?php
-require_once './rumor-background/RestAPI/writeLog.php';
+require_once dirname(__FILE__) . '/rumor-background/RestAPI/writeLog.php';
 require_once dirname(__FILE__) . '/functions/cardReply.php';
 # writeLog($userText, 0, $userId, $noMatch); //ユーザのメッセージ
 # テキストの内容，ボット=>1，ユーザID，インテント失敗=>1
 
 function getRumorsFromTweet($twitterURL) {
-    require_once './rumor-background/RestAPI/getSimTweet.php';
-    require_once './rumor-background/RestAPI/getTweet.php';
+    require_once dirname(__FILE__) . '/rumor-background/RestAPI/getSimTweet.php';
+    require_once dirname(__FILE__) . '/rumor-background/RestAPI/getTweet.php';
     $res = getTweet($twitterURL); // ツイートのリンクからツイートを取得
     global $userId;
     
@@ -38,14 +38,14 @@ function getRumorsFromTweet($twitterURL) {
 }
 
 function getRumorsFromFreeWord($userText) {
-    require_once './rumor-background/RestAPI/getSimTweet.php';
+    require_once dirname(__FILE__) . '/rumor-background/RestAPI/getSimTweet.php';
     $userText = cleanText($userText);
     $res = getSimTweet($userText);
     return cardReply($res);
 }
 
 function getFiveRatestRumor() {
-    require_once './rumor-background/RestAPI/getRatestRumor.php';
+    require_once dirname(__FILE__) . '/rumor-background/RestAPI/getRatestRumor.php';
     $res = getRatestRumor();
     return cardReply($res);
 }
