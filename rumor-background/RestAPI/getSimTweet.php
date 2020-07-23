@@ -6,7 +6,9 @@ require dirname(__FILE__) . '/strToJSON.php';
 
 function getSimTweet($text) {
 
-    $command="/usr/local/bin/python3 /home/nishimura/public_html/rumor-bot/rumor-background/RestAPI/getSimTweet.py $text 2>&1";
+    $path = dirname(__FILE__) . "/getSimTweet.py";
+    #$command="/usr/local/bin/python3 /home/nishimura/public_html/rumor-bot/rumor-background/RestAPI/getSimTweet.py $text 2>&1";
+    $command="/usr/local/bin/python3 $path $text 2>&1";
     exec($command,$output); //pythonを呼び出して形態素解析
     $result = strToJSON($output);
     return $result;
