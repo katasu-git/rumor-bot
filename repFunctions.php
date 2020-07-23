@@ -45,9 +45,13 @@ function getRumorsFromTweet($twitterURL) {
 }
 
 function getRumorsFromFreeWord($userText) {
+    global $userId;
     require_once dirname(__FILE__) . '/rumor-background/RestAPI/getSimTweet.php';
+
     $userText = cleanText($userText);
     $res = getSimTweet($userText);
+    writeLog($userText, 0, $userId, 0); // ユーザのメッセージ
+    writeRumorsLog($res); //ボットのメッセージ
     $messages = cardReply($res);
     array_push(
         $messages, 
@@ -59,9 +63,13 @@ function getRumorsFromFreeWord($userText) {
     return $messages;
 }
 
-function getFiveRatestRumor() {
+function getFiveRatestRumor($userText) {
+    global $userId;
     require_once dirname(__FILE__) . '/rumor-background/RestAPI/getRatestRumor.php';
+
     $res = getRatestRumor();
+    writeLog($userText, 0, $userId, 0); // ユーザのメッセージ
+    writeRumorsLog($res); //ボットのメッセージ
     $messages = cardReply($res);
     return $messages;
 }

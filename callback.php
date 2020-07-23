@@ -95,7 +95,7 @@ if ($action == 'share-twitter') {
 
 } else if ($action == 'handle-latest-rumor') {
     // 最新の流言を上から5つ取ってくる処理
-    $messages = getFiveRatestRumor();
+    $messages = getFiveRatestRumor($userText);
 
 } else {
     //例外処理
