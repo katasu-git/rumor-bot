@@ -4,7 +4,7 @@ ini_set('display_errors', "On"); //エラー表示
 function strToJSON($output) {
     $json = json_encode($output);
     $array = json_decode($json, true);
-
+    
     $result = [];
     foreach($array as $a){
         $array = explode(',', $a);
@@ -13,6 +13,7 @@ function strToJSON($output) {
         $associative['fix'] = $array[2];
         $associative['wakachi'] = $array[3];
         $associative['url'] = $array[4];
+        $associative['slashKeywords'] = $array[5];
         array_push($result, trimStr($associative));
     }
     return $result;

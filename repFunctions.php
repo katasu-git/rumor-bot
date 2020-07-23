@@ -34,6 +34,13 @@ function getRumorsFromTweet($twitterURL) {
     writeRumorsLog($res); //ボットのメッセージ
 
     $messages = cardReply($res);
+    array_push(
+        $messages, 
+        [
+            "type"=>"text",
+            "text"=>count($res) . "件の怪しい情報見つかったよ！"
+        ]
+    );
     return $messages;
 }
 
@@ -41,24 +48,22 @@ function getRumorsFromFreeWord($userText) {
     require_once dirname(__FILE__) . '/rumor-background/RestAPI/getSimTweet.php';
     $userText = cleanText($userText);
     $res = getSimTweet($userText);
-    return cardReply($res);
+    $messages = cardReply($res);
+    array_push(
+        $messages, 
+        [
+            "type"=>"text",
+            "text"=>count($res) . "件の怪しい情報見つかったよ！"
+        ]
+    );
+    return $messages;
 }
 
 function getFiveRatestRumor() {
     require_once dirname(__FILE__) . '/rumor-background/RestAPI/getRatestRumor.php';
     $res = getRatestRumor();
-    return cardReply($res);
-}
-
-function cutText($text) {
-    //文字数の上限
-    $limit = 45;
-    if(mb_strlen($text) > $limit) { 
-        $cutText = mb_substr($text,0,$limit, "UTF-8");
-        return $cutText . "...";
-    } else {
-        return $text;
-    }
+    $messages = cardReply($res);
+    return $messages;
 }
 
 function cleanText($text) {

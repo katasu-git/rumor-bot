@@ -49,7 +49,8 @@ def textsToUni(texts):
 
 def dupCounter(l1, l2):
     l1_l2_and = set(l1) & set(l2)
-    return len(l1_l2_and)
+    #print(l1_l2_and)
+    return l1_l2_and
 
 def getWakachi(rumors):
     wakachiList = []
@@ -58,12 +59,21 @@ def getWakachi(rumors):
             wakachiList.append( r[3].split('/') )
     return wakachiList
 
+def createHitKeywords(keywords):
+    slashKeywords = ""
+    for k in keywords:
+        slashKeywords = slashKeywords + k + "/"
+    slashKeywords = slashKeywords[:-1]
+    return slashKeywords
+
 def getSimRumor(wakachiList, nouns):
     hitList = []
     for i in range( len(wakachiList) ):
-        length = dupCounter(wakachiList[i], nouns)
+        keywords = dupCounter(wakachiList[i], nouns)
+        length = len(keywords)
         if length > 0:
-            dic = [length, int(i)]
+            slashKeywords = createHitKeywords(keywords) # ヒットしたキーワードをスラッシュ区切りで取り出す
+            dic = [length, int(i), slashKeywords]
             hitList.append( dic )
     return hitList
 
@@ -82,6 +92,7 @@ def main():
 
     if hitList:
         for h in hitList:
+            rumors[h[1]].append(h[2]) # どのキーワードにヒットっしたかを加える
             print(rumors[h[1]])
 
     """

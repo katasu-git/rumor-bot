@@ -1,6 +1,6 @@
 <?php
 ini_set('display_errors', "On"); //エラー表示
-require dirname(__FILE__) . '/strToJSON.php';
+require dirname(__FILE__) . '/strToJson.php';
 
 function getRatestRumor() {
 
