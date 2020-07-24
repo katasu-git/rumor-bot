@@ -1,0 +1,70 @@
+{
+  "type": "bubble",
+  "direction": "ltr",
+  "header": {
+      "type": "box",
+      "layout": "horizontal",
+      "contents": [
+          {
+          "type": "text",
+          "text": "観光キャンペーンは旅行代理店経由でないと補助が出ない",
+          "margin": "xxl",
+          "size": "md",
+          "align": "start",
+          "gravity": "top",
+          "weight": "bold",
+          "color": "#FFFFFF",
+          "wrap": true
+          }
+      ]
+  },
+  "body": {
+      "type": "box",
+      "layout": "horizontal",
+      "contents": [
+          {
+          "type": "box",
+          "layout": "vertical",
+          "contents": [
+              {
+                  "type": "text",
+                  "text": "この情報を8人が疑っています",
+                  "margin": "md",
+                  "size": "sm",
+                  "align": "center",
+                  "color": "#4B4C4B"
+              }
+          ]
+          }
+      ]
+  },
+  "footer": {
+      "type": "box",
+      "layout": "horizontal",
+      "contents": [{
+          "type": "button",
+          "action": {
+              "type": "uri",
+              "label": "もっと詳しく！",
+              "uri": "https://linecorp.com"
+          },
+          "color": "#009FB9",
+          "margin": "none",
+          "height": "sm",
+          "style": "link",
+          "gravity": "center"
+      }]
+  },
+  "styles": {
+      "header": {
+          "backgroundColor": "#00B900"
+      },
+      "body": {
+          "backgroundColor": "#FFFFFF",
+          "separator": true
+      },
+      "footer": {
+          "separator": true
+      }
+  }
+}
