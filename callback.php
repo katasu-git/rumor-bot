@@ -1,4 +1,5 @@
 <?php
+ini_set('display_errors', "On"); //エラー表示
 require 'vendor/autoload.php';
 require_once dirname(__FILE__) . '/functions/dialogFlow.php';
 require_once dirname(__FILE__) . '/functions/backMessageToUser.php';
@@ -8,8 +9,6 @@ require_once dirname(__FILE__) . '/functions/cardReply.php';
 require_once dirname(__FILE__) . '/rumor-background/RestAPI/getRatestRumor.php';
 require_once dirname(__FILE__) . '/rumor-background/RestAPI/getSimTweet.php';
 require_once dirname(__FILE__) . '/rumor-background/RestAPI/getTweet.php';
-
-ini_set('display_errors', "On"); //エラー表示
 
 //ユーザーからのメッセージ取得
 $json_string = file_get_contents('php://input');
@@ -27,8 +26,8 @@ if($type != "text"){
     #テキスト以外のときは適当なスタンプでごまかす
     $messages = [];
     array_push($messages, createStickerMessages());
-    writeConversations($userId, $type, $type, $type, $type);
     backMessageToUser($replyToken, $messages);
+    writeConversations($userId, $type, $type, $type, $type);
     exit;
 }
 
@@ -61,7 +60,11 @@ if ($action == 'share-twitter') {
                 $messages, 
                 [
                     "type"=>"text",
-                    "text"=>count($rumors) . "件の怪しい情報が見つかったよ！"
+                    "text"=>"【もとのツイート】\n" . deleteURL($tweetJson['full_text'])
+                ],
+                [
+                    "type"=>"text",
+                    "text"=>"👆のツイートに関係しそうな" . count($rumors) . "件の怪しい情報が見つかったよ！"
                 ]
             );
             $reply_rumor = createRumorsForLog($rumors);
@@ -75,7 +78,6 @@ if ($action == 'share-twitter') {
         $reply_rumor = "ツイートが見つからなかったよ$emoji";
         $messages = simpleReply([$reply_rumor]);
     }
-    writeConversations($userId, $action, $type, $userText, $reply_rumor);
 
 } else if ($action == 'handle-user-doubt' || $action == 'handle-keyword-rumor') {
     // 〜って本当？と聞かれた場合
@@ -91,25 +93,22 @@ if ($action == 'share-twitter') {
         ]
     );
     $reply_rumor = createRumorsForLog($rumors);
-    writeConversations($userId, $action, $type, $userText, $reply_rumor);
 
 } else if($action == 'input.welcome') {
     // あいさつ
     $messages = [];
-    $text = $array['queryResult']['fulfillmentText'];
+    $reply_rumor = $array['queryResult']['fulfillmentText'];
     array_push($messages, createStickerMessages());
     array_push($messages,
         [
             "type"=>"text",
-            "text"=>$text
+            "text"=>$reply_rumor
         ]
     );
-    writeConversations($userId, $action, $type, $userText, $text);
 
 } else if ($action == 'input.unknown' || $action == 'handle-help') {
     // ヘルプを表示，もしくは意図がわからなかった場合
-    $text = "使い方はわかったかな？気になることがあったら、「〇〇ってホント？」って話しかけてみてね！";
-    //$messages = simpleReply([$text]);
+    $reply_rumor = "使い方はわかったかな？気になることがあったら、「〇〇ってホント？」って話しかけてみてね！";
     $messages = [
         [
             "type"=> "image",
@@ -128,10 +127,9 @@ if ($action == 'share-twitter') {
         ],
         [
             "type"=> "text",
-            "text"=> $text
+            "text"=> $reply_rumor
         ]
     ];
-    writeConversations($userId, $action, $type, $userText, $text);
 
 } else if ($action == 'handle-latest-rumor') {
     // 最新の流言を上から5つ取ってくる処理
@@ -145,15 +143,14 @@ if ($action == 'share-twitter') {
         ]
     );
     $reply_rumor = createRumorsForLog($rumors);
-    writeConversations($userId, $action, $type, $userText, $reply_rumor);
 } else {
     //例外処理
-    $text = '「〇〇の流言を教えて！」や「〇〇って本当？」と話しかけてみてください！';
-    writeConversations($userId, "exception", "exception", $userText, $text);
-    $messages = simpleReply([$text]);
+    $reply_rumor = '「〇〇の流言を教えて！」や「〇〇って本当？」と話しかけてみてください！';
+    $messages = simpleReply([$reply_rumor]);
 }
 
 backMessageToUser($replyToken, $messages);
+writeConversations($userId, $action, $type, $userText, $reply_rumor); //ログ書き込み
 
 function createRumorsForLog($rumors) {
     $reply_rumor = "";
@@ -165,11 +162,16 @@ function createRumorsForLog($rumors) {
 
 function cleanText($text) {
     // URLを削除
+    $text = deleteURL($text);
+    $text = preg_replace("/( |　)/", "", $text ); #文中に含まれる空白を削除
+    $text = preg_replace('/(?:\n|\r|\r\n)/', '', $text );
+    return $text;
+}
+
+function deleteURL($text) {
     if(preg_match_all('(https?://[-_.!~*\'()a-zA-Z0-9;/?:@&=+$,%#]+)', $text, $result) !== false){
         $text = str_replace($result[0], '', $text);
     }
-    $text = preg_replace("/( |　)/", "", $text ); #文中に含まれる空白を削除
-    $text = preg_replace('/(?:\n|\r|\r\n)/', '', $text );
     return $text;
 }
 
