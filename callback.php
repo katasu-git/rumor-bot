@@ -4,7 +4,9 @@ require_once dirname(__FILE__) . '/functions/dialogFlow.php';
 require_once dirname(__FILE__) . '/repFunctions.php';
 require_once dirname(__FILE__) . '/functions/backMessageToUser.php';
 require_once dirname(__FILE__) . '/functions/createStickerMessages.php';
-require_once dirname(__FILE__) . '/rumor-background/RestAPI/writeLog.php';
+require_once dirname(__FILE__) . '/functions/writeConversations.php';
+require_once dirname(__FILE__) . '/functions/cardReply.php';
+require_once dirname(__FILE__) . '/rumor-background/RestAPI/getRatestRumor.php';
 
 ini_set('display_errors', "On"); //エラー表示
 
@@ -24,8 +26,8 @@ if($type != "text"){
     #テキスト以外のときは適当なスタンプでごまかす
     $messages = [];
     array_push($messages, createStickerMessages());
+    writeConversations($userId, $type, $type, $type, $type);
     backMessageToUser($replyToken, $messages);
-    writeLog("user has sended $type", 0, $userId, 0); //ユーザのメッセージ
     exit;
 }
 
@@ -62,8 +64,7 @@ if ($action == 'share-twitter') {
             "text"=>$text
         ]
     );
-    writeLog($userText, 0, $userId, 0); // ユーザのメッセージ
-    writeLog($text, 1, $userId, 0); //ボットのメッセージ
+    writeConversations($userId, $action, $type, $userText, $text);
 
 } else if ($action == 'input.unknown' || $action == 'handle-help') {
     // ヘルプを表示，もしくは意図がわからなかった場合
@@ -90,12 +91,14 @@ if ($action == 'share-twitter') {
             "text"=> $text
         ]
     ];
-    writeLog($userText, 0, $userId, 0); // ユーザのメッセージ
-    writeLog($text, 1, $userId, 0); //ボットのメッセージ
+    writeConversations($userId, $action, $type, $userText, $text);
 
 } else if ($action == 'handle-latest-rumor') {
     // 最新の流言を上から5つ取ってくる処理
-    $messages = getFiveRatestRumor($userText);
+    $rumors = getRatestRumor();
+    $reply_rumor = createRumorsForLog($rumors);
+    writeConversations($userId, $action, $type, $userText, $reply_rumor);
+    $messages = cardReply($rumors);
     array_push($messages,
         [
             "type"=>"text",
@@ -106,11 +109,16 @@ if ($action == 'share-twitter') {
 } else {
     //例外処理
     $text = '「〇〇の流言を教えて！」や「〇〇って本当？」と話しかけてみてください！';
+    writeConversations($userId, "exception", "exception", $userText, $text);
     $messages = simpleReply([$text]);
-    writeLog($userText, 0, $userId, 0); // ユーザのメッセージ
-    writeLog("例外処理発生", 1, $userId, 0); //ボットのメッセージ
 }
 
 backMessageToUser($replyToken, $messages);
 
-############ テキストメッセージの返却処理 ##########################################
+function createRumorsForLog($rumors) {
+    $reply_rumor = "";
+    for($i=0; $i<count($rumors); $i++) {
+        $reply_rumor = $reply_rumor . $rumors[$i]['contents'] . "\n";
+    }
+    return $reply_rumor;
+}

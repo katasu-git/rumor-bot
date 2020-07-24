@@ -63,6 +63,7 @@ function getRumorsFromFreeWord($userText) {
     return $messages;
 }
 
+/*
 function getFiveRatestRumor($userText) {
     global $userId;
     require_once dirname(__FILE__) . '/rumor-background/RestAPI/getRatestRumor.php';
@@ -73,6 +74,7 @@ function getFiveRatestRumor($userText) {
     $messages = cardReply($res);
     return $messages;
 }
+*/
 
 function cleanText($text) {
     // URLを削除
