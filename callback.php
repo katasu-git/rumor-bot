@@ -84,15 +84,21 @@ if ($action == 'share-twitter') {
     $userText = cleanText($userText);
     $rumors = getSimTweet($userText);
 
-    $messages = cardReply($rumors);
-    array_push(
-        $messages, 
-        [
-            "type"=>"text",
-            "text"=>count($rumors) . "件の怪しい情報が見つかったよ！"
-        ]
-    );
-    $reply_rumor = createRumorsForLog($rumors);
+    if($rumors) {
+        $messages = cardReply($rumors);
+        array_push(
+            $messages, 
+            [
+                "type"=>"text",
+                "text"=>count($rumors) . "件の怪しい情報が見つかったよ！"
+            ]
+        );
+        $reply_rumor = createRumorsForLog($rumors);
+    } else {
+        $emoji = json_decode('"\uDBC0\uDC29"');
+        $reply_rumor = "関係しそうなデマは見つからなかったよ$emoji 他に気になる情報はないかな？";
+        $messages = simpleReply([$reply_rumor]);
+    }
 
 } else if($action == 'input.welcome') {
     // あいさつ
@@ -146,6 +152,12 @@ if ($action == 'share-twitter') {
 } else {
     //例外処理
     $reply_rumor = '「〇〇の流言を教えて！」や「〇〇って本当？」と話しかけてみてください！';
+    $messages = simpleReply([$reply_rumor]);
+}
+
+// 何かしらの例外でメッセージが空の場合
+if(!$messages) {
+    $reply_rumor = "ごめんなさい、他の言葉でためしてみてね$emoji";
     $messages = simpleReply([$reply_rumor]);
 }
 
