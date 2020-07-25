@@ -3,6 +3,7 @@ import sys
 import pprint
 import json
 import copy
+import datetime
 
 sys.path.append('/home/nishimura/.local/lib/python2.7/site-packages')
 #pprint.pprint(sys.path)
@@ -24,15 +25,22 @@ def getRumorsJson():
             rumors.append( l.split('	') )
     return rumors
 
+
 f = open('/home/nishimura/public_html/rumor-bot/conf/lineAccessToken.txt')
 LINE_CHANNEL_ACCESS_TOKEN = f.read()  # ファイル終端まで全て読んだデータを返す
 f.close()
 
 line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
-user_id = 'Uf811de50a7725a63c181cf7fc8977ae7'
 
 rumors = getRumorsJson()
-rumors = rumors[:5]
+
+dt_now = datetime.datetime.now()
+if(dt_now.hour < 12):
+    rumors = rumors[:5]
+    message = TextSendMessage(text="どうも、ちるもです\uDBC0\uDCA9\n今日も怪しい情報がたくさん出回っているよ\uDBC0\uDC9B\n気になる情報があったら僕に話しかけてみてね！")
+else:
+    rumors = rumors[5:9]
+    message = TextSendMessage(text="今日も一日お疲れ様！\uDBC0\uDC86\n今夜も怪しい情報には注意してね\uDBC0\uDC29\n使い方に迷ったら、「なにができる？」と聞いてみてね！")
 
 json_open = open('./flex.json', 'r')
 flextemp = json.load(json_open)
@@ -56,8 +64,6 @@ flex_message = FlexSendMessage(
     alt_text='Flex Message',
     contents=carouselJSON
 )
-
-message = TextSendMessage(text="どうも、ちるもです\uDBC0\uDCA9\n今日も怪しい情報がたくさん出回っているよ\uDBC0\uDC9B\n気になる情報があったら僕に話しかけてみてね！")
 
 #line_bot_api.push_message(user_id, messages=[flex_message,message]) #id指定して個人に送信するパターン
 #line_bot_api.multicast(['to1', 'to2'], messages) #複数ユーザに送信するには配列でidを渡す
