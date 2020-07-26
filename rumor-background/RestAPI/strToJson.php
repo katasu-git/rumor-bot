@@ -13,7 +13,7 @@ function strToJSON($output) {
         $associative['fix'] = $array[2];
         $associative['wakachi'] = $array[3];
         $associative['url'] = $array[4];
-        $associative['slashKeywords'] = $array[5];
+        $associative['slashKeywords'] = end($array); # 最後に付加する情報なので
         array_push($result, trimStr($associative));
     }
     return $result;
