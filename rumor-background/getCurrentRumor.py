@@ -1,14 +1,11 @@
 # coding: UTF-8
 import sys
 import MeCab
-#import urllib2 #python2
 import urllib.request, urllib.error #python3
 import csv
 import shutil
-#from kutt import kutt #shorURL
 
 def getStopWords():
-    #http://svn.sourceforge.jp/svnroot/slothlib/CSharp/Version1/SlothLib/NLP/Filter/StopWord/word/Japanese.txt
     f = open('/home/nishimura/public_html/rumor-bot/rumor-background/stopwordJP.txt')
     data = f.read()  # ファイル終端まで全て読んだデータを返す
     f.close()
@@ -22,8 +19,8 @@ def getStopWords():
     return stopWords
 
 def returnAnaTexts(texts):
-    #辞書の場所を指定する（なぜかフルパスで指定しないと動かない）
-    userdic_path="-d /usr/local/lib/mecab/dic/mecab-ipadic-neologd" #空白削除しないと精度でない？
+    # 形態素解析の結果を配列に追加する関数
+    # userdic_path="-d /usr/local/lib/mecab/dic/mecab-ipadic-neologd" # 辞書の場所を指定する（なぜかフルパスで指定しないと動かない）
     m = MeCab.Tagger("-Ochasen")
 
     anaTexts = []
@@ -62,17 +59,14 @@ def addShortURL(rumors):
     rumorCloudLink = "http://mednlp.jp/~miyabe/rumorCloud/detail_dema2.cgi" #?m=&r=1&n=540
     rumorsWithURL = rumors
     for i in range(len(rumors)):
-        uniqueURL = rumorCloudLink + "?m=&r=" + rumors[i][0] + "&n=" + rumors[i][2]
+        uniqueURL = rumorCloudLink + "?m=&r=" + rumors[i][0] + "&n=" + rumors[i][2] # ランキングと訂正数からURLを生成
         rumorsWithURL[i].append( uniqueURL )
-    #print(rumorsWithURL[0])
 
 def writeTsv(array):
-    #####　書き込み ####
     f = open('/home/nishimura/public_html/rumor-bot/rumor-background/rumor-nishimura.txt', 'w')
-    writer = csv.writer(f, delimiter='\t')
+    writer = csv.writer(f, delimiter='\t')  # 生成した配列をタブ区切りでテキストファイルとして書き出し
     writer.writerows(array)
     f.close()
-    ##################
 
 def getOldFile():
     fileURL = '/home/nishimura/public_html/rumor-bot/rumor-background/'
@@ -80,25 +74,25 @@ def getOldFile():
 
 def readFile(URL):
     f = open(URL)
-    olds = f.read().splitlines()   # ファイル終端まで全て読んだデータを返す
+    olds = f.read().splitlines()    # 一行ごとに配列にする
     for index, o in enumerate(olds):
-        olds[index] = o.split('	')
+        olds[index] = o.split('	')  # タブ区切りで行内を配列化
     f.close()
-    return olds
+    return olds # 二重配列化したものを返却
 
 def getUpDown(news):
-    getOldFile()
+    getOldFile() # 前日に生成したnishimura-rumorを旧ファイルtとして避難させる rumor-nishimura-old.txt
     olds = readFile('/home/nishimura/public_html/rumor-bot/rumor-background/rumor-nishimura-old.txt')
     for index, n in enumerate(news):
         for o in olds:
             if(n[1] == o[1]):
-                difFixsNum = int(n[2]) - int(o[2])
-                news[index].append(str(difFixsNum))
-                news[index].append("already")
+                difFixsNum = int(n[2]) - int(o[2]) # 同一内容の流言について，前日との訂正数の差分を算出
+                news[index].append(str(difFixsNum)) # 差を配列に追加
+                news[index].append("already") # 一致するものがある = 既出なのでわかるように配列に追加
                 break
         if len(news[index]) < 7:
-            news[index].append(news[index][2])
-            news[index].append("new")
+            news[index].append(news[index][2]) # 同一内容の流言がなかった場合，配列の長さが7未満になるので，訂正数の増減 = 訂正数として追加
+            news[index].append("new") # 新着の流言であることを追加
 
 def main():
     rumors = getRumorsJson()
