@@ -4,7 +4,8 @@ import MeCab
 #import urllib2 #python2
 import urllib.request, urllib.error #python3
 import csv
-from kutt import kutt #shorURL
+import shutil
+#from kutt import kutt #shorURL
 
 def getStopWords():
     #http://svn.sourceforge.jp/svnroot/slothlib/CSharp/Version1/SlothLib/NLP/Filter/StopWord/word/Japanese.txt
@@ -44,18 +45,10 @@ def returnAnaTexts(texts):
     return anaTexts
 
 def getRumorsJson():
-    """
-    # python2系の処理 urllib2はpython3にはないらしい
-    f = urllib2.urlopen('http://mednlp.jp/~miyabe/rumorCloud/currentRank.txt') #python2
-    line = f.read().splitlines() # 開いたファイルの中身を表示する
-    f.close()
-    """
     url = 'http://mednlp.jp/~miyabe/rumorCloud/currentRank.txt'
     response = urllib.request.urlopen(url)
     data = response.read()
     line = data.splitlines() # 開いたファイルの中身を表示する
-    #line = line.decode('utf-8') # なぜかバイト列なので文字列に変換
-    #print(line[4])
 
     rumors = []
     for l in line:
@@ -63,29 +56,15 @@ def getRumorsJson():
         if l.split('	') != ['']: #これがないとゴミが入る
             rumors.append( l.split('	') )
     del rumors[0] #一行目は関係ないので削除 , id，　本体，　訂正数　の順の配列になっている
-
-    """
-    for r in rumors:
-        print str(r[0]) + ":" + r[1]
-    """
-
     return rumors
-
-def getShortURL(longURL):
-    f = open('/home/nishimura/public_html/rumor-bot/conf/kutt.txt')
-    API = f.read()  # ファイル終端まで全て読んだデータを返す
-    obj = kutt.submit(API, longURL, reuse=True) # reuse, customurl and password are OPTIONAL
-    shortURL = obj['data']['link']
-    return shortURL
 
 def addShortURL(rumors):
     rumorCloudLink = "http://mednlp.jp/~miyabe/rumorCloud/detail_dema2.cgi" #?m=&r=1&n=540
     rumorsWithURL = rumors
     for i in range(len(rumors)):
         uniqueURL = rumorCloudLink + "?m=&r=" + rumors[i][0] + "&n=" + rumors[i][2]
-        #uniqueURL = getShortURL(uniqueURL) #urlを短縮
         rumorsWithURL[i].append( uniqueURL )
-    print(rumorsWithURL[0])
+    #print(rumorsWithURL[0])
 
 def writeTsv(array):
     #####　書き込み ####
@@ -93,10 +72,33 @@ def writeTsv(array):
     writer = csv.writer(f, delimiter='\t')
     writer.writerows(array)
     f.close()
-
-    print("書き込み完了！")
     ##################
 
+def getOldFile():
+    fileURL = '/home/nishimura/public_html/rumor-bot/rumor-background/'
+    shutil.copy(fileURL + 'rumor-nishimura.txt', fileURL + 'rumor-nishimura-old.txt')
+
+def readFile(URL):
+    f = open(URL)
+    olds = f.read().splitlines()   # ファイル終端まで全て読んだデータを返す
+    for index, o in enumerate(olds):
+        olds[index] = o.split('	')
+    f.close()
+    return olds
+
+def getUpDown(news):
+    getOldFile()
+    olds = readFile('/home/nishimura/public_html/rumor-bot/rumor-background/rumor-nishimura-old.txt')
+    for index, n in enumerate(news):
+        for o in olds:
+            if(n[1] == o[1]):
+                difFixsNum = int(n[2]) - int(o[2])
+                news[index].append(str(difFixsNum))
+                news[index].append("already")
+                break
+        if len(news[index]) < 7:
+            news[index].append(news[index][2])
+            news[index].append("new")
 
 def main():
     rumors = getRumorsJson()
@@ -110,6 +112,8 @@ def main():
             anaRumorsFixed.append( anaRumors[i] )
     ############################
 
+    getUpDown(anaRumorsFixed)
     writeTsv(anaRumorsFixed)
+    print("書き込み完了！")
 
 main()

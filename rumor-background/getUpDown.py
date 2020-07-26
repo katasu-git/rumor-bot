@@ -13,9 +13,9 @@ def readFile(URL):
     f.close()
     return olds
 
-def main():
+def getUpDown():
     olds = readFile('/home/nishimura/public_html/rumor-bot/rumor-background/rumor-nishimura.txt')
-    news = readFile('/home/nishimura/public_html/rumor-bot/rumor-background/rumor-nishimura_sabun.txt')
+    news = readFile('/home/nishimura/public_html/rumor-bot/rumor-background/rumor-nishimura-old.txt')
 
     for index, n in enumerate(news):
         for o in olds:
@@ -32,4 +32,4 @@ def main():
         if int(n[5]) > 0:
             print(n)
 
-main()
+getUpDown()
