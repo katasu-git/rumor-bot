@@ -1,6 +1,7 @@
 # coding: UTF-8
 import sys
 import json
+import random
 
 def getRumorsJson():
     #json_open = open('/home/nishimura/public_html/editTsv/rumor_kakimoto.json', 'r')
@@ -15,10 +16,19 @@ def getRumorsJson():
             rumors.append( l.split('	') )
     return rumors
 
+def getNewRumors(rumors):
+    newRumors = []
+    for r in rumors:
+        if r[6] == 'new':
+            newRumors.append(r)
+    return newRumors
+
 def main():
     rumors = getRumorsJson()
     # id content num wakachi
-    for i in range(5):
-        print(rumors[i])
+    newRumors = getNewRumors(rumors)
+    newRumors = random.sample(newRumors, 5)
+    for r in newRumors:
+        print(r)
 
 main()
