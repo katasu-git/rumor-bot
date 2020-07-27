@@ -25,6 +25,13 @@ def getRumorsJson():
             rumors.append( l.split('	') )
     return rumors
 
+def getNewRumors(rumors):
+    newRumors = []
+    for r in rumors:
+        if r[6] == 'new':
+            newRumors.append(r)
+    return newRumors
+
 
 f = open('/home/nishimura/public_html/rumor-bot/conf/lineAccessToken.txt')
 LINE_CHANNEL_ACCESS_TOKEN = f.read()  # ファイル終端まで全て読んだデータを返す
@@ -39,7 +46,13 @@ if(dt_now.hour < 12):
     rumors = rumors[:5]
     message = TextSendMessage(text="どうも、ちるもです\uDBC0\uDCA9\n今日も怪しい情報がたくさん出回っているよ\uDBC0\uDC9B\n気になる情報があったら僕に話しかけてみてね！")
 else:
-    rumors = rumors[5:9]
+    newRumors = getNewRumors(rumors)
+    if newRumors:
+        rumors = newRumors
+        if len(rumors) > 5:
+            rumors = rumors[:5]
+    else:
+        rumors = rumors[5:9]
     message = TextSendMessage(text="今日も一日お疲れ様！\uDBC0\uDC86\n今夜も怪しい情報には注意してね\uDBC0\uDC29\n使い方に迷ったら、「なにができる？」と聞いてみてね！")
 
 json_open = open('./flex.json', 'r')
