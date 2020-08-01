@@ -32,7 +32,6 @@ def getNewRumors(rumors):
             newRumors.append(r)
     return newRumors
 
-
 f = open('/home/nishimura/public_html/rumor-bot/conf/lineAccessToken.txt')
 LINE_CHANNEL_ACCESS_TOKEN = f.read()  # ファイル終端まで全て読んだデータを返す
 f.close()
