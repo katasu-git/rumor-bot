@@ -21,6 +21,9 @@ def getNewRumors(rumors):
     for r in rumors:
         if r[6] == 'new':
             newRumors.append(r)
+    if not newRumors:
+        for i in range(5):
+            newRumors.append(rumors[i])
     return newRumors
 
 def main():
