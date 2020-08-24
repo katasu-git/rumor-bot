@@ -4,6 +4,7 @@ import MeCab
 import urllib.request, urllib.error #python3
 import csv
 import shutil
+import pymysql.cursors
 
 def getStopWords():
     f = open('/home/nishimura/public_html/rumor-bot/rumor-background/stopwordJP.txt')
@@ -94,6 +95,28 @@ def getUpDown(news):
             news[index].append(news[index][2]) # 同一内容の流言がなかった場合，配列の長さが7未満になるので，訂正数の増減 = 訂正数として追加
             news[index].append("new") # 新着の流言であることを追加
 
+def getFixTweets():
+    url = 'http://mednlp.jp/~miyabe/rumorCloud/uniqueDema.txt'
+    response = urllib.request.urlopen(url)
+    data = response.read()
+    line = data.splitlines() # 開いたファイルの中身を表示する
+
+    fixTweets = []
+    for l in line:
+        l = l.decode('utf-8') # なぜかバイト列なので文字列に変換
+        if l.split('	') != ['']: #これがないとゴミが入る
+            fixTweets.append( l.split('	') )
+    return fixTweets # 本文,訂正数，ツイートの順で格納
+
+def addFixTweets(rumors):
+    fixTweets = getFixTweets()
+    for indexR, r in enumerate(rumors):
+        for f in fixTweets:
+            if r[1] == f[0]:
+                rumors[indexR].append(f[2])
+                break
+    print(rumors[0])
+
 def main():
     rumors = getRumorsJson()
     anaRumors = returnAnaTexts(rumors) #currentRankに形態素解析の結果を加える
@@ -107,6 +130,7 @@ def main():
     ############################
 
     getUpDown(anaRumorsFixed)
+    addFixTweets(anaRumorsFixed)
     writeTsv(anaRumorsFixed)
     print("書き込み完了！")
 
