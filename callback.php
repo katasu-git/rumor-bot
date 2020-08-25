@@ -7,7 +7,6 @@ require_once dirname(__FILE__) . '/functions/createStickerMessages.php';
 require_once dirname(__FILE__) . '/functions/writeConversations.php';
 require_once dirname(__FILE__) . '/functions/replyCards.php';
 require_once dirname(__FILE__) . '/rumor-background/RestAPI/getRatestRumor.php';
-require_once dirname(__FILE__) . '/rumor-background/RestAPI/getSimTweet.php';
 require_once dirname(__FILE__) . '/rumor-background/RestAPI/getSimRumors.php';
 require_once dirname(__FILE__) . '/rumor-background/RestAPI/getTweet.php';
 
