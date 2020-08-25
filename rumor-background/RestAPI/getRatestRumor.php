@@ -1,15 +1,28 @@
 <?php
 ini_set('display_errors', "On"); //エラー表示
-require dirname(__FILE__) . '/strToJson.php';
+require_once dirname(__FILE__) . "/../../functions/connect_mysql.php";
 
 function getRatestRumor() {
+    $today = date('Y-m-d');
 
-    // $command="python getRatestRumor.py";
-    $path = dirname(__FILE__) . "/getRatestRumor.py";
-    $command="/usr/local/bin/python3 $path 2>&1";
-    exec($command,$output); //pythonを呼び出して形態素解析
-    $result = strToJSON($output);
+    $pdo = connectMysql();  //mysqlに接続
+    $sql = "SELECT * FROM rumors WHERE created_at = '$today'"; // シングルコート必要
+    $stmt = $pdo -> query($sql);
+    $result = array();
+    foreach($stmt as $row) {
+        $rumor = array('id' => $row['id'], 'content' => $row['content'], 'fix' => $row['fix'], 'fix_tweets' => $row['fix_tweets'], 'morpheme' => $row['morpheme'], 'updown' => $row['updown'], 'created_at' => $row['created_at']);
+        array_push($result, $rumor);
+    }
+    $result = sortDesk($result);
     return $result;
-
 }
-#getRatestRumor() #削除する
+
+function sortDesk($array) {
+    foreach ((array) $array as $key => $value) {
+        $sort[$key] = $value['updown'];
+    }
+    array_multisort($sort, SORT_DESC, $array);
+    return $array;
+}
+
+var_dump(getRatestRumor()); #削除する

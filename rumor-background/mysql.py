@@ -14,13 +14,12 @@ def getYesterday():
 def getYesterdayRumors(connection):
     # SQLを実行する
     with connection.cursor() as cursor:
-        sql = ("SELECT id, content FROM rumors WHERE timestamp=%s")
+        sql = ("SELECT id, content FROM rumors WHERE created_at=%s")
         cursor.execute(sql, getYesterday())
 
         # Select結果を取り出す
         contents = cursor.fetchall()
         return contents
-
 
 def connectMySQL():
     f = open('/home/nishimura/public_html/rumor-bot/conf/dbInfo_python.txt')
@@ -53,7 +52,7 @@ def getTodayRumors():
 
 def insertRumor(connection, rumor):
     with connection.cursor() as cursor:
-            sql = "INSERT INTO rumors (content, fix, fix_tweets, morpheme, updown, timestamp) VALUES (%s, %s, %s, %s, %s, %s)"
+            sql = "INSERT INTO rumors (content, fix, fix_tweets, morpheme, updown, created_at) VALUES (%s, %s, %s, %s, %s, %s)"
             cursor.execute(sql, (rumor[1], int(rumor[2]), rumor[7], rumor[3], int(rumor[5]), getToday()))
             connection.commit()
 

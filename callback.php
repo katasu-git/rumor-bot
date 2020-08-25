@@ -6,6 +6,7 @@ require_once dirname(__FILE__) . '/functions/backMessageToUser.php';
 require_once dirname(__FILE__) . '/functions/createStickerMessages.php';
 require_once dirname(__FILE__) . '/functions/writeConversations.php';
 require_once dirname(__FILE__) . '/functions/cardReply.php';
+require_once dirname(__FILE__) . '/functions/replyCards.php';
 require_once dirname(__FILE__) . '/rumor-background/RestAPI/getRatestRumor.php';
 require_once dirname(__FILE__) . '/rumor-background/RestAPI/getSimTweet.php';
 require_once dirname(__FILE__) . '/rumor-background/RestAPI/getTweet.php';
@@ -143,11 +144,11 @@ if ($action == 'share-twitter') {
     // 最新の流言を上から5つ取ってくる処理
     $rumors = getRatestRumor();
     
-    $messages = cardReply($rumors);
+    $messages = replyCards($rumors);
     array_push($messages,
         [
             "type"=>"text",
-            "text"=>"最新の流言を5つお伝えするよ"
+            "text"=>"今日新しく見つかった流言だよ！"
         ]
     );
     $reply_rumor = createRumorsForLog($rumors);
