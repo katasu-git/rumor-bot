@@ -1,6 +1,7 @@
 <?php
 ini_set('display_errors', "On"); //エラー表示
 require_once dirname(__FILE__) . "/../../functions/connect_mysql.php";
+require_once dirname(__FILE__) . "/../RestAPI/sortDesk.php";
 
 function getRatestRumor() {
     $today = date('Y-m-d');
@@ -13,16 +14,8 @@ function getRatestRumor() {
         $rumor = array('id' => $row['id'], 'content' => $row['content'], 'fix' => $row['fix'], 'fix_tweets' => $row['fix_tweets'], 'morpheme' => $row['morpheme'], 'updown' => $row['updown'], 'created_at' => $row['created_at']);
         array_push($result, $rumor);
     }
-    $result = sortDesk($result);
+    $result = sortDesk($result, 'updown');
     return $result;
 }
 
-function sortDesk($array) {
-    foreach ((array) $array as $key => $value) {
-        $sort[$key] = $value['updown'];
-    }
-    array_multisort($sort, SORT_DESC, $array);
-    return $array;
-}
-
-var_dump(getRatestRumor()); #削除する
+# var_dump(getRatestRumor()); #削除する

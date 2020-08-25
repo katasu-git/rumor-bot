@@ -5,10 +5,10 @@ require_once dirname(__FILE__) . '/functions/dialogFlow.php';
 require_once dirname(__FILE__) . '/functions/backMessageToUser.php';
 require_once dirname(__FILE__) . '/functions/createStickerMessages.php';
 require_once dirname(__FILE__) . '/functions/writeConversations.php';
-require_once dirname(__FILE__) . '/functions/cardReply.php';
 require_once dirname(__FILE__) . '/functions/replyCards.php';
 require_once dirname(__FILE__) . '/rumor-background/RestAPI/getRatestRumor.php';
 require_once dirname(__FILE__) . '/rumor-background/RestAPI/getSimTweet.php';
+require_once dirname(__FILE__) . '/rumor-background/RestAPI/getSimRumors.php';
 require_once dirname(__FILE__) . '/rumor-background/RestAPI/getTweet.php';
 
 //ユーザーからのメッセージ取得
@@ -56,9 +56,9 @@ if ($action == 'share-twitter') {
     $tweet = $tweetJson['full_text'];
     if ($tweet) {
         $tweet = cleanText($tweet);
-        $rumors = getSimTweet($tweet);
+        $rumors = getSimRumors($tweet);
         if($rumors) {
-            $messages = cardReply($rumors);
+            $messages = replyCards($rumors);
             array_push(
                 $messages, 
                 [
@@ -85,10 +85,10 @@ if ($action == 'share-twitter') {
 } else if ($action == 'handle-user-doubt' || $action == 'handle-keyword-rumor') {
     // 〜って本当？と聞かれた場合
     $userText = cleanText($userText);
-    $rumors = getSimTweet($userText);
+    $rumors = getSimRumors($userText);
 
     if($rumors) {
-        $messages = cardReply($rumors);
+        $messages = replyCards($rumors);
         array_push(
             $messages, 
             [
@@ -178,6 +178,7 @@ function createRumorsForLog($rumors) {
 function cleanText($text) {
     // URLを削除
     $text = deleteURL($text);
+    $text = preg_replace("/[^ぁ-んァ-ンーa-zA-Z0-9一-龠０-９\-\r]+/u",'' ,$text);
     $text = preg_replace("/( |　)/", "", $text ); #文中に含まれる空白を削除
     $text = preg_replace('/(?:\n|\r|\r\n)/', '', $text );
     return $text;

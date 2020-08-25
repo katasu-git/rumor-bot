@@ -129,7 +129,7 @@ function getTweet($twitterURL) {
 	
 		// JSONをオブジェクトに変換
 		$obj = json_decode( $json, true ) ;
-		echo $obj;
+		print_r($obj);
 		return $obj;
 
 }
