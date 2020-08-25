@@ -77,7 +77,7 @@ function cardReply($rumors) {
                         "action"=> [
                           "type"=> "uri",
                           "label"=> "もっと詳しく！",
-                          "uri"=> $rumors[$i]['url']
+                          "uri"=> "https://liff.line.me/1654776413-dpYy83Wb" . "?id=512"
                         ],
                         "color"=> "#009FB9",
                         "margin"=> "none",
@@ -155,7 +155,7 @@ function cardReply($rumors) {
                         "action"=> [
                           "type"=> "uri",
                           "label"=> "もっと詳しく！",
-                          "uri"=> $rumors[$i]['url']
+                          "uri"=> "https://liff.line.me/1654776413-dpYy83Wb" . "?id=512"
                         ],
                         "color"=> "#009FB9",
                         "margin"=> "none",

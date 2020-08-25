@@ -59,8 +59,10 @@ def insertRumor(connection, rumor):
 
 def updateRumor(connection, id, rumor):
     with connection.cursor() as cursor:
-        sql = "UPDATE rumors SET (fix, updown) VALUES (%s, %s) WHERE id = %s"
-        cursor.execute(sql, (rumor[2], rumor[5]), (id))
+        sql = "UPDATE rumors SET fix = %s WHERE id = %s"
+        cursor.execute(sql, (rumor[2], id))
+        sql2 = "UPDATE rumors SET updown = %s WHERE id = %s"
+        cursor.execute(sql2, (rumor[5], id))
         connection.commit()
 
 def judgeInsertUpdate(yesterdayRumors, todayRumors, connection):
