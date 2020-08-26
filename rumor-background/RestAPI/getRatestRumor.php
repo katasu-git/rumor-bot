@@ -18,4 +18,4 @@ function getRatestRumor() {
     return $result;
 }
 
-# var_dump(getRatestRumor()); #削除する
+var_dump(getRatestRumor()); #削除する

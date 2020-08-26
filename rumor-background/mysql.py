@@ -1,5 +1,6 @@
 # coding: UTF-8
 import pymysql.cursors
+from datetime import datetime, timedelta
 import datetime
 
 def getToday():
@@ -11,11 +12,16 @@ def getYesterday():
 	yesterday=today-oneday  
 	return yesterday
 
+def getWeekAgo():
+    weekago = (datetime.datetime.now() - timedelta(weeks=1)).strftime('%Y-%m-%d')
+    return weekago
+
 def getYesterdayRumors(connection):
     # SQLを実行する
     with connection.cursor() as cursor:
-        sql = ("SELECT id, content FROM rumors WHERE created_at=%s")
-        cursor.execute(sql, getYesterday())
+        # sql = ("SELECT id, content FROM rumors WHERE created_at=%s")
+        sql = ("SELECT id, content FROM rumors WHERE created_at BETWEEN %s AND %s")
+        cursor.execute(sql, (getWeekAgo(), getToday()))
 
         # Select結果を取り出す
         contents = cursor.fetchall()
