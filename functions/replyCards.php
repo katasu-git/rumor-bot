@@ -72,7 +72,7 @@ function replyCards($rumors) {
                     "action"=> [
                       "type"=> "uri",
                       "label"=> "もっと詳しく！",
-                      "uri"=> "https://liff.line.me/1654776413-dpYy83Wb" . "/?id=$id"
+                      "uri"=> "https://liff.line.me/1654776413-dpYy83Wb" . "/?id=$id&path=detail"
                     ],
                     "color"=> "#009FB9",
                     "margin"=> "none",
