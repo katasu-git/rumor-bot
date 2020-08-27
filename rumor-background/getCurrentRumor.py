@@ -30,16 +30,16 @@ def returnAnaTexts(texts):
             nouns = [line.split()[0] for line in m.parse(t[1]).splitlines()
                         if "名詞" in line.split()[-1] and not(line.split()[0] in getStopWords())] #配列の最後が「名詞」の時 かつ　ストップワードでない場合
         
-        slashNouns = ""
-        for i in range(len(nouns)):
-            if i != len(nouns) - 1:
-                slashNouns = slashNouns + str(nouns[i]) + '/'
-            else:
-                slashNouns = slashNouns + str(nouns[i])
-        #print slashNouns
-        text = t
-        text.append( slashNouns )
-        anaTexts.append( text )
+            slashNouns = ""
+            for i in range(len(nouns)):
+                if i != len(nouns) - 1:
+                    slashNouns = slashNouns + str(nouns[i]) + '/'
+                else:
+                    slashNouns = slashNouns + str(nouns[i])
+            #print slashNouns
+            text = t
+            text.append( slashNouns )
+            anaTexts.append( text )
     return anaTexts
 
 def getRumorsJson():
