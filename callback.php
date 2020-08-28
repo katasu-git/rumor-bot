@@ -7,6 +7,7 @@ require_once dirname(__FILE__) . '/functions/createStickerMessages.php';
 require_once dirname(__FILE__) . '/functions/writeConversations.php';
 require_once dirname(__FILE__) . '/functions/replyCards.php';
 require_once dirname(__FILE__) . '/rumor-background/RestAPI/getRatestRumor.php';
+require_once dirname(__FILE__) . '/rumor-background/RestAPI/getSuddenRiseRumor.php';
 require_once dirname(__FILE__) . '/rumor-background/RestAPI/getSimRumors.php';
 require_once dirname(__FILE__) . '/rumor-background/RestAPI/getTweet.php';
 
@@ -142,6 +143,17 @@ if ($action == 'share-twitter') {
 } else if ($action == 'handle-latest-rumor') {
     // 最新の流言を上から5つ取ってくる処理
     $rumors = getRatestRumor();
+    
+    $messages = replyCards($rumors);
+    array_push($messages,
+        [
+            "type"=>"text",
+            "text"=>"今日新しく見つかった流言だよ！"
+        ]
+    );
+    $reply_rumor = createRumorsForLog($rumors);
+} else if ($action == 'handle-sudden-rise') {
+    $rumors = getSuddenRiseRumor();
     
     $messages = replyCards($rumors);
     array_push($messages,
