@@ -6,19 +6,35 @@ import copy
 from linebot import LineBotApi
 from linebot.models import TextSendMessage
 from linebot.models import FlexSendMessage
-import getTodayRumors
 
-def createFlexMessage(rumors):
+def createFlexMessage(rumors, rumorType):
     json_open = open('./flex_v2.json', 'r')
     flextemp = json.load(json_open)
     flex_array = []
 
     for r in rumors:
         flexmessage = flextemp
-        flexmessage["header"]["contents"][1]["text"] = "疑っている人：" + str(r['fix']) + "人"
-        flexmessage["body"]["contents"][0]["contents"][1]["text"] = r['content']
-        flexmessage["footer"]["contents"][0]["action"]["uri"] = "https://liff.line.me/1654776413-dpYy83Wb/?id=" + str(r['id']) + "&path=detail"
-        flexmessage["styles"]["header"]["backgroundColor"] = "#A0D7DC"
+
+        content = r['content']
+        URL = "https://liff.line.me/1654776413-dpYy83Wb/?id=" + str(r['id']) + "&path=detail"
+        if rumorType == "today":
+            label = "【今日の新着】"
+            fixText = "疑っている人：" + str(r['fix']) + "人"
+            topColor = "#A0D7DC"
+        elif rumorType == "attention":
+            label = "【注目・急上昇】"
+            fixText = "疑っている人：" + str(r['fix']) + "人（昨日より）"
+            topColor = "#EF7943"
+        elif rumorType == "ranking":
+            label = "【訂正数ランク】"
+            fixText = "疑っている人：" + str(r['fix']) + "人"
+            topColor = "#74BE89"
+
+        flexmessage["header"]["contents"][0]["text"] = label
+        flexmessage["header"]["contents"][1]["text"] = fixText
+        flexmessage["body"]["contents"][0]["contents"][1]["text"] = content
+        flexmessage["footer"]["contents"][0]["action"]["uri"] = URL
+        flexmessage["styles"]["header"]["backgroundColor"] = topColor
         flex_array.append(copy.deepcopy(flexmessage))
 
     carouselJSON = {
@@ -41,9 +57,6 @@ def sendMessage(messagesToSend):
     # line_bot_api.multicast(['to1', 'to2'], messages) #複数ユーザに送信するには配列でidを渡す
     # line_bot_api.broadcast(messages=[flex_message,message]) #登録者全員に送信
 
-def main():
-    rumors = getTodayRumors.getTodayRumors()
-    messagesToSend = createFlexMessage(rumors)
+def pushRumors(rumors):
+    messagesToSend = createFlexMessage(rumors, "today")
     sendMessage(messagesToSend)
-
-main()

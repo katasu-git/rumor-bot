@@ -35,10 +35,10 @@
             {
                 "type": "text",
                 "text": "【怪しい情報】",
-                "size": "sm",
+                "size": "xs",
                 "align": "center",
                 "weight": "regular",
-                "color": "#4B4B4B"
+                "color": "#797979"
             },
             {
                 "type": "text",

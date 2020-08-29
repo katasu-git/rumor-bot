@@ -2,6 +2,7 @@
 import pymysql.cursors
 import connectMySQL
 import datetime
+import pushRumors
 
 def getTodayRumors():
     connection = connectMySQL.connectMySQL()
@@ -12,3 +13,9 @@ def getTodayRumors():
         cursor.execute(sql, d_today)
         contents = cursor.fetchall()
         return contents
+
+def main():
+    rumors = getTodayRumors()
+    pushRumors.pushRumors(rumors)
+
+main()
