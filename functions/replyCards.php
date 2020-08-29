@@ -23,15 +23,18 @@ function replyCards($rumors, $handle) {
 
         if($handle == "handle-latest-rumor") {
           $topColor = "#6AC0C8";
+          $label = "【今日の新着】";
           $subText = "疑っている人：$fix" . "人";
     
         } else if($handle == "handle-sudden-rise") {
           $topColor = "#EF7943";
           $subText = "疑っている人：$updown" . "人（昨日より）";
+          $label = "【注目・急上昇】";
 
         } else {
           $topColor = "#74BE89";
           $subText = "疑っている人：$fix" . "人";
+          $label = "【類似】";
 
         }
         $content = $rumors[$i]['content'];
@@ -44,13 +47,21 @@ function replyCards($rumors, $handle) {
               "direction"=> "ltr",
               "header"=> [
                 "type"=> "box",
-                "layout"=> "horizontal",
+                "layout"=> "vertical",
                 "contents"=> [
+                  [
+                    "type"=> "text",
+                    "text"=> "$label",
+                    "size"=> "xs",
+                    "align"=> "center",
+                    "color"=> "#FFFFFF"
+                  ],
                   [
                     "type"=> "text",
                     "text"=> "$subText",
                     "size"=> "sm",
                     "align"=> "center",
+                    "margin"=> "sm",
                     "weight"=> "bold",
                     "color"=> "#FFFFFF",
                     "wrap"=> false
@@ -68,7 +79,7 @@ function replyCards($rumors, $handle) {
                       [
                         "type"=> "text",
                         "text"=> "【怪しい情報】",
-                        "size"=> "sm",
+                        "size"=> "xs",
                         "align"=> "center",
                         "weight"=> "regular",
                         "color"=> "#797979"
@@ -76,13 +87,16 @@ function replyCards($rumors, $handle) {
                       [
                         "type"=> "text",
                         "text"=> "$content",
-                        "margin"=> "md",
+                        "margin"=> "lg",
                         "size"=> "lg",
                         "align"=> "center",
                         "gravity"=> "center",
                         "weight"=> "bold",
                         "color"=> "#4B4B4B",
                         "wrap"=> true
+                      ],
+                      [
+                        "type"=> "spacer"
                       ]
                     ]
                   ]
