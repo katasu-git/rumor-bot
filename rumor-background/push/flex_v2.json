@@ -1,0 +1,90 @@
+{
+    "type": "bubble",
+    "direction": "ltr",
+    "header": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+        {
+            "type": "text",
+            "text": "【新着】",
+            "size": "xs",
+            "align": "center",
+            "color": "#FFFFFF"
+        },
+        {
+            "type": "text",
+            "text": "この情報を8人が疑っています",
+            "margin": "sm",
+            "size": "sm",
+            "align": "center",
+            "weight": "bold",
+            "color": "#FFFFFF",
+            "wrap": false
+        }
+        ]
+    },
+    "body": {
+        "type": "box",
+        "layout": "horizontal",
+        "contents": [
+        {
+            "type": "box",
+            "layout": "vertical",
+            "contents": [
+            {
+                "type": "text",
+                "text": "【怪しい情報】",
+                "size": "sm",
+                "align": "center",
+                "weight": "regular",
+                "color": "#4B4B4B"
+            },
+            {
+                "type": "text",
+                "text": "観光キャンペーンは旅行代理店経由でないと補助が出ない",
+                "margin": "lg",
+                "size": "lg",
+                "align": "center",
+                "gravity": "center",
+                "weight": "bold",
+                "color": "#4B4B4B",
+                "wrap": true
+            },
+            {
+                "type": "spacer"
+            }
+            ]
+        }
+        ]
+    },
+    "footer": {
+        "type": "box",
+        "layout": "horizontal",
+        "contents": [
+        {
+            "type": "button",
+            "action": {
+            "type": "uri",
+            "label": "もっと詳しく！",
+            "uri": "https=>//liff.line.me/1654776413-dpYy83Wb\" . \"/?id=$id&path=detail"
+            },
+            "color": "#3498CB",
+            "style": "link",
+            "gravity": "center"
+        }
+        ]
+    },
+    "styles": {
+        "header": {
+            "backgroundColor": "#A0D7DC"
+        },
+        "body": {
+            "backgroundColor": "#FFFFFF",
+            "separator": true
+        },
+        "footer": {
+            "separator": true
+        }
+    }
+}

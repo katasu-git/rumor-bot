@@ -143,18 +143,19 @@ if ($action == 'share-twitter') {
 } else if ($action == 'handle-latest-rumor') {
     // 最新の流言を上から5つ取ってくる処理
     $rumors = getRatestRumor();
+    $rumorsRand = [];
     foreach( array_rand( $rumors, 5 ) as $key ) {
-		$rumors[] = $rumors[$key] ;
+		array_push($rumorsRand, $rumors[$key]);
 	}
-    
-    $messages = replyCards($rumors, "handle-latest-rumor");
+    $messages = replyCards($rumorsRand, "handle-latest-rumor");
     array_push($messages,
         [
             "type"=>"text",
             "text"=>"今日新しく見つかった流言だよ！"
         ]
     );
-    $reply_rumor = createRumorsForLog($rumors);
+    $reply_rumor = createRumorsForLog($rumorsRand);
+
 } else if ($action == 'handle-sudden-rise') {
     $rumors = getSuddenRiseRumor();
     
@@ -183,9 +184,10 @@ writeConversations($userId, $action, $type, $userText, $reply_rumor); //ログ�
 
 function createRumorsForLog($rumors) {
     $reply_rumor = "";
-    for($i=0; $i<count($rumors); $i++) {
-        $reply_rumor = $reply_rumor . $rumors[$i]['contents'] . "\n";
+    for($i=0; $i<5; $i++) {
+        $reply_rumor = $reply_rumor . $rumors[$i]['id'] . "/";
     }
+    $reply_rumor = substr($reply_rumor, 0, -1); // 最後のスラッシュ削除
     return $reply_rumor;
 }
 
