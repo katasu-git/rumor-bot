@@ -10,7 +10,7 @@ function returnUpDown($updown) {
     }
 }
 
-function replyCards($rumors) {
+function replyCards($rumors, $handle) {
     $cardMessages = [];
     $file = dirname(__FILE__) . "/flex.json";
     $json = file_get_contents($file);
@@ -21,8 +21,24 @@ function replyCards($rumors) {
         $fix = (string) $rumors[$i]['fix'];
         $id = (string) $rumors[$i]['id'];
 
+        if($handle == "handle-latest-rumor") {
+          $topColor = "#6AC0C8";
+          $subText = "疑っている人：$fix" . "人";
+    
+        } else if($handle == "handle-sudden-rise") {
+          $topColor = "#EF7943";
+          $subText = "疑っている人：$updown" . "人（昨日より）";
+
+        } else {
+          $topColor = "#74BE89";
+          $subText = "疑っている人：$fix" . "人";
+
+        }
+        $content = $rumors[$i]['content'];
+        $detailURL = "https://liff.line.me/1654776413-dpYy83Wb/?id=$id&path=detail";
+
         array_push(
-            $array["contents"]["contents"],
+          $array["contents"]["contents"],
             [
               "type"=> "bubble",
               "direction"=> "ltr",
@@ -32,14 +48,12 @@ function replyCards($rumors) {
                 "contents"=> [
                   [
                     "type"=> "text",
-                    "text"=> $rumors[$i]['content'],
-                    "margin"=> "xxl",
-                    "size"=> "md",
-                    "align"=> "start",
-                    "gravity"=> "top",
+                    "text"=> "$subText",
+                    "size"=> "sm",
+                    "align"=> "center",
                     "weight"=> "bold",
                     "color"=> "#FFFFFF",
-                    "wrap"=> true
+                    "wrap"=> false
                   ]
                 ]
               ],
@@ -53,11 +67,22 @@ function replyCards($rumors) {
                     "contents"=> [
                       [
                         "type"=> "text",
-                        "text"=> $fix . "人が疑っています($updown" . "人)",
-                        "margin"=> "md",
+                        "text"=> "【怪しい情報】",
                         "size"=> "sm",
                         "align"=> "center",
-                        "color"=> "#4B4C4B"
+                        "weight"=> "regular",
+                        "color"=> "#797979"
+                      ],
+                      [
+                        "type"=> "text",
+                        "text"=> "$content",
+                        "margin"=> "md",
+                        "size"=> "lg",
+                        "align"=> "center",
+                        "gravity"=> "center",
+                        "weight"=> "bold",
+                        "color"=> "#4B4B4B",
+                        "wrap"=> true
                       ]
                     ]
                   ]
@@ -72,11 +97,9 @@ function replyCards($rumors) {
                     "action"=> [
                       "type"=> "uri",
                       "label"=> "もっと詳しく！",
-                      "uri"=> "https://liff.line.me/1654776413-dpYy83Wb" . "/?id=$id&path=detail"
+                      "uri"=> "$detailURL"
                     ],
                     "color"=> "#009FB9",
-                    "margin"=> "none",
-                    "height"=> "sm",
                     "style"=> "link",
                     "gravity"=> "center"
                   ]
@@ -84,7 +107,7 @@ function replyCards($rumors) {
               ],
               "styles"=> [
                 "header"=> [
-                  "backgroundColor"=> "#00B900"
+                  "backgroundColor"=> "$topColor"
                 ],
                 "body"=> [
                   "backgroundColor"=> "#FFFFFF",

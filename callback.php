@@ -58,7 +58,7 @@ if ($action == 'share-twitter') {
         $tweet = cleanText($tweet);
         $rumors = getSimRumors($tweet);
         if($rumors) {
-            $messages = replyCards($rumors);
+            $messages = replyCards($rumors, "share-twitter");
             array_push(
                 $messages, 
                 [
@@ -88,7 +88,7 @@ if ($action == 'share-twitter') {
     $rumors = getSimRumors($userText);
 
     if($rumors) {
-        $messages = replyCards($rumors);
+        $messages = replyCards($rumors, "handle-user-doubt");
         array_push(
             $messages, 
             [
@@ -143,8 +143,11 @@ if ($action == 'share-twitter') {
 } else if ($action == 'handle-latest-rumor') {
     // 最新の流言を上から5つ取ってくる処理
     $rumors = getRatestRumor();
+    foreach( array_rand( $rumors, 5 ) as $key ) {
+		$rumors[] = $rumors[$key] ;
+	}
     
-    $messages = replyCards($rumors);
+    $messages = replyCards($rumors, "handle-latest-rumor");
     array_push($messages,
         [
             "type"=>"text",
@@ -155,11 +158,11 @@ if ($action == 'share-twitter') {
 } else if ($action == 'handle-sudden-rise') {
     $rumors = getSuddenRiseRumor();
     
-    $messages = replyCards($rumors);
+    $messages = replyCards($rumors, "handle-sudden-rise");
     array_push($messages,
         [
             "type"=>"text",
-            "text"=>"今日新しく見つかった流言だよ！"
+            "text"=>"みんなの関心が高まってる流言だよ！"
         ]
     );
     $reply_rumor = createRumorsForLog($rumors);

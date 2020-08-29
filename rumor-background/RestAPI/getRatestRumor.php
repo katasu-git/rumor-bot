@@ -14,7 +14,7 @@ function getRatestRumor() {
         $rumor = array('id' => $row['id'], 'content' => $row['content'], 'fix' => $row['fix'], 'fix_tweets' => $row['fix_tweets'], 'morpheme' => $row['morpheme'], 'updown' => $row['updown'], 'created_at' => $row['created_at']);
         array_push($result, $rumor);
     }
-    $result = sortDesk($result, 'updown');
+    // $result = sortDesk($result, 'updown');
     return $result;
 }
 
