@@ -15,7 +15,7 @@ function getRumors() {
 
     $pdo = connectMysql();  //mysqlに接続
     # $sql = "SELECT * FROM rumors WHERE created_at = '$today'"; // シングルコート必要
-    $sql = "SELECT * FROM rumors"; // シングルコート必要
+    $sql = "SELECT * FROM rumors ORDER BY created_at DESC LIMIT 400"; // シングルコート必要
     $stmt = $pdo -> query($sql);
     $result = array();
     foreach($stmt as $row) {
