@@ -21,7 +21,7 @@ def createFlexMessage(rumors, rumorType):
             label = "【今日の新着】"
             fixText = "疑っている人：" + str(r['fix']) + "人"
             topColor = "#A0D7DC"
-        elif rumorType == "attention":
+        elif rumorType == "suddenRise":
             label = "【注目・急上昇】"
             fixText = "疑っている人：" + str(r['fix']) + "人（昨日より）"
             topColor = "#EF7943"
@@ -48,6 +48,9 @@ def createFlexMessage(rumors, rumorType):
     )
     return flex_message
 
+def createTextMessage(textMessage):
+    return TextSendMessage(text=textMessage)
+
 def sendMessage(messagesToSend):
     f = open('/home/nishimura/public_html/rumor-bot/conf/lineAccessToken.txt')
     LINE_CHANNEL_ACCESS_TOKEN = f.read()  # ファイル終端まで全て読んだデータを返す
@@ -57,6 +60,8 @@ def sendMessage(messagesToSend):
     # line_bot_api.multicast(['to1', 'to2'], messages) #複数ユーザに送信するには配列でidを渡す
     # line_bot_api.broadcast(messages=[flex_message,message]) #登録者全員に送信
 
-def pushRumors(rumors):
-    messagesToSend = createFlexMessage(rumors, "today")
+def pushRumors(rumors, rumorType, textMessage):
+    flexMessage = createFlexMessage(rumors, rumorType)
+    textMessage = createTextMessage(textMessage)
+    messagesToSend = [flexMessage, textMessage]
     sendMessage(messagesToSend)
