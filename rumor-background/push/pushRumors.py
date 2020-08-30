@@ -26,7 +26,7 @@ def createFlexMessage(rumors, rumorType):
             fixText = "疑っている人：" + str(r['fix']) + "人（昨日より）"
             topColor = "#EF7943"
         elif rumorType == "ranking":
-            label = "【訂正数ランク】"
+            label = "【訂正ランキング順】"
             fixText = "疑っている人：" + str(r['fix']) + "人"
             topColor = "#74BE89"
 

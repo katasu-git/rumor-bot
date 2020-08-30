@@ -51,7 +51,7 @@ def getRumorsToSend():
     elif weekday == 2 or weekday == 5 or weekday == 6:
         rumorsToSend = getRankingRumors()
         rumorType = "ranking"
-        textMessage = "こんばんは！今日は訂正数の多い流言をお伝えするよ！"
+        textMessage = "こんばんは！今日は訂正数の多い流言をお伝えするよ！\nもっと見たいときはランキングを開いてね。\nhttps://liff.line.me/1654776413-dpYy83Wb/?id=&path=ranking"
 
     rumorsAndType = {"rumorsToSend": rumorsToSend, "rumorType": rumorType, "textMessage": textMessage}
     return rumorsAndType
