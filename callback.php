@@ -8,6 +8,7 @@ require_once dirname(__FILE__) . '/functions/writeConversations.php';
 require_once dirname(__FILE__) . '/functions/replyCards.php';
 require_once dirname(__FILE__) . '/rumor-background/RestAPI/getRatestRumor.php';
 require_once dirname(__FILE__) . '/rumor-background/RestAPI/getSuddenRiseRumor.php';
+require_once dirname(__FILE__) . '/rumor-background/RestAPI/getRankingRumors.php';
 require_once dirname(__FILE__) . '/rumor-background/RestAPI/getSimRumors.php';
 require_once dirname(__FILE__) . '/rumor-background/RestAPI/getTweet.php';
 
@@ -167,6 +168,19 @@ if ($action == 'share-twitter') {
         ]
     );
     $reply_rumor = createRumorsForLog($rumors);
+
+} else if ($action == 'handle-ranking') {
+    $rumors = getRankingRumors();
+    
+    $messages = replyCards($rumors, "handle-ranking");
+    array_push($messages,
+        [
+            "type"=>"text",
+            "text"=>"続きはここで見られるよ！\nhttps://www2.yoslab.net/~nishimura/chillmoWeb/?id=&path=ranking"
+        ]
+    );
+    $reply_rumor = createRumorsForLog($rumors);
+
 } else {
     //例外処理
     $reply_rumor = '「〇〇の流言を教えて！」や「〇〇って本当？」と話しかけてみてください！';

@@ -20,6 +20,7 @@ function replyCards($rumors, $handle) {
         $updown = returnUpDown($rumors[$i]['updown']);
         $fix = (string) $rumors[$i]['fix'];
         $id = (string) $rumors[$i]['id'];
+        $rank = $i + 1;
 
         if($handle == "handle-latest-rumor") {
           $topColor = "#6AC0C8";
@@ -31,8 +32,13 @@ function replyCards($rumors, $handle) {
           $subText = "疑っている人：$updown" . "人（昨日より）";
           $label = "【注目・急上昇】";
 
-        } else {
+        } else if("handle-ranking") {
           $topColor = "#74BE89";
+          $subText = "疑っている人：$fix" . "人";
+          $label = "【ランキング $rank" . "位】";
+
+        } else {
+          $topColor = "#C6CF63";
           $subText = "疑っている人：$fix" . "人";
           $label = "【類似】";
 
