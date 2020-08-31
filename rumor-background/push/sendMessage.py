@@ -39,17 +39,17 @@ def getRumorsToSend():
     rumorType = ""
     textMessage = ""
 
-    if weekday == 0 or weekday == 3:
+    if weekday == 1 or weekday == 4:
         rumorsToSend = getTodayRumors()
         rumorType = "today"
         textMessage = "こんばんは！今日は最新の流言をお伝えするよ！"
 
-    elif weekday == 1 or weekday == 4:
+    elif weekday == 2 or weekday == 5:
         rumorsToSend = getSuddenRiseRumors()
         rumorType = "suddenRise"
         textMessage = "こんばんは！今日はいま注目度が急上昇している流言をお伝えするよ！"
 
-    elif weekday == 2 or weekday == 5 or weekday == 6:
+    elif weekday == 3 or weekday == 6:
         rumorsToSend = getRankingRumors()
         rumorType = "ranking"
         textMessage = "こんばんは！今日は訂正数の多い流言をお伝えするよ！\nもっと見たいときはランキングを開いてね。\nhttps://liff.line.me/1654776413-dpYy83Wb/?id=&path=ranking"
