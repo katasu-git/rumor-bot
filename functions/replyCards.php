@@ -32,7 +32,7 @@ function replyCards($rumors, $handle) {
           $subText = "疑っている人：$updown" . "人（昨日より）";
           $label = "【注目・急上昇】";
 
-        } else if("handle-ranking") {
+        } else if($handle == "handle-ranking") {
           $topColor = "#74BE89";
           $subText = "疑っている人：$fix" . "人";
           $label = "【ランキング $rank" . "位】";
