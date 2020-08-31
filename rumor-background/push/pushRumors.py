@@ -51,17 +51,17 @@ def createFlexMessage(rumors, rumorType):
 def createTextMessage(textMessage):
     return TextSendMessage(text=textMessage)
 
-def sendMessage(messagesToSend):
+def sendMessage(messagesToSend, users):
     f = open('/home/nishimura/public_html/rumor-bot/conf/lineAccessToken.txt')
     LINE_CHANNEL_ACCESS_TOKEN = f.read()  # ファイル終端まで全て読んだデータを返す
     f.close()
     line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
-    line_bot_api.push_message("Uf811de50a7725a63c181cf7fc8977ae7", messages=messagesToSend) #id指定して個人に送信するパターン
-    # line_bot_api.multicast(['to1', 'to2'], messages) #複数ユーザに送信するには配列でidを渡す
+    # line_bot_api.push_message("Uf811de50a7725a63c181cf7fc8977ae7", messages=messagesToSend) #id指定して個人に送信するパターン
+    line_bot_api.multicast(users, messages=messagesToSend) #複数ユーザに送信するには配列でidを渡す
     # line_bot_api.broadcast(messages=[flex_message,message]) #登録者全員に送信
 
-def pushRumors(rumors, rumorType, textMessage):
+def pushRumors(rumors, rumorType, textMessage, users):
     flexMessage = createFlexMessage(rumors, rumorType)
     textMessage = createTextMessage(textMessage)
     messagesToSend = [flexMessage, textMessage]
-    sendMessage(messagesToSend)
+    sendMessage(messagesToSend, users)

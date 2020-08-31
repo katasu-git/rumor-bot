@@ -3,6 +3,7 @@ import pymysql.cursors
 import connectMySQL
 import datetime
 import pushRumors
+import getUsers
 
 def getTodayRumors():
     connection = connectMySQL.connectMySQL()
@@ -58,7 +59,16 @@ def getRumorsToSend():
 
 def main():
     rumorsAndType = getRumorsToSend()
+    """
+    users = getUsers.getUsers()
+    sendUsers = []
+    for u in users:
+        if u['test_group'] == 2:
+            sendUsers.append(u['line_user_id'])
+    """
+    sendUsers = ["Uf811de50a7725a63c181cf7fc8977ae7"]
+
     if rumorsAndType:
-        pushRumors.pushRumors(rumorsAndType['rumorsToSend'], rumorsAndType['rumorType'], rumorsAndType['textMessage'])
+        pushRumors.pushRumors(rumorsAndType['rumorsToSend'], rumorsAndType['rumorType'], rumorsAndType['textMessage'], sendUsers)
 
 main()
