@@ -176,7 +176,7 @@ if ($action == 'share-twitter') {
     array_push($messages,
         [
             "type"=>"text",
-            "text"=>"続きはここで見られるよ！\nhttps://www2.yoslab.net/~nishimura/chillmoWeb/?id=&path=ranking"
+            "text"=>"続きはここで見られるよ！\nhttps://liff.line.me/1654776413-dpYy83Wb/?id=&path=ranking"
         ]
     );
     $reply_rumor = createRumorsForLog($rumors);
